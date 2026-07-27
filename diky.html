@@ -3,43 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Děkujeme za registraci</title>
+  <title>Děkujeme | Kino ve mlýně</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #050505;
+      color: #f1f1f1;
+      font-family: 'Poppins', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
+      min-height: 100vh;
       padding: 20px;
+      position: relative;
+      overflow-x: hidden;
     }
 
+    /* AMBIENTNÍ SVĚTLO JAKO NA INDEXU */
+    body::before {
+      content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.04) 0%, transparent 60%);
+      animation: ambientPulse 15s infinite alternate; z-index: -1; pointer-events: none;
+    }
+    @keyframes ambientPulse { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
+
     .container {
-      max-width: 600px;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      max-width: 550px;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(25,25,25,0.8), rgba(10,10,10,0.95));
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      padding: 40px 30px;
+      border-radius: 25px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      text-align: center;
     }
 
     h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 800;
+      color: #d4af37;
+      margin-bottom: 15px;
+      line-height: 1.2;
     }
 
     p {
-      font-size: 1.2em;
+      font-size: 1rem;
+      line-height: 1.6;
+      opacity: 0.85;
+      margin-bottom: 30px;
+    }
+
+    .btn-home {
+      display: inline-block;
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #e8c655, #d4af37);
+      color: #050505;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-home:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Děkujeme za registraci!</h1>
-    <p>Do 30 minut vám přijde e-mail s potvrzením./p>
+    <h1>Děkujeme za vaši rezervaci!</h1>
+    <p>Vaše data byla úspěšně odeslána. V nejbližší době vám dorazí podrobnosti a potvrzení na zadaný e-mail.</p>
+    <a href="index.html" class="btn-home">Zpět na hlavní stranu</a>
   </div>
 </body>
 </html>
