@@ -680,12 +680,12 @@
         <input type="text" name="Jméno" id="res-name" placeholder="Vaše jméno" required>
         <input type="email" name="Email" placeholder="Váš e-mail" required>
         
-        <select name="Vybraná událost" required>
+        <select name="Vybraná událost" id="event-select" onchange="onEventChange()" required>
           <option value="" disabled selected>Vyberte událost</option>
-          <option>Slavnostní otevření kina</option>
-          <option>Michael</option>
-          <option>Avengers: Endgame (2019)</option>
-          <option>Derby pražských "S"</option>
+          <option value="Slavnostní otevření kina">Slavnostní otevření kina</option>
+          <option value="Michael">Michael</option>
+          <option value="Avengers: Endgame (2019)">Avengers: Endgame (2019)</option>
+          <option value="Derby pražských &quot;S&quot;">Derby pražských "S"</option>
         </select>
 
         <select name="Platba" required>
@@ -759,7 +759,7 @@
           </div>
           <p class="movie-desc">Kompletní program zahájení provozu: Čeká vás detailní prohlídka kina, představení nového filmu a také se můžete těšit na celovečerní kultovní pecku <strong>Simpsonovi ve filmu</strong>!</p>
           <div class="movie-btn-container">
-            <button onclick="toggleModal('reservation-modal')" class="movie-card-btn">Rezervovat vstupenku</button>
+            <button onclick="openReservationForEvent('Slavnostní otevření kina')" class="movie-card-btn">Rezervovat vstupenku</button>
           </div>
         </div>
       </div>
@@ -779,7 +779,7 @@
           </div>
           <p class="movie-desc">Strhující životopisný snímek o králi popu, Michaelu Jacksonovi. Nahlédněte do zákulisí jeho neuvěřitelné kariéry, složitého osobního života a objevte hudební génia, který navždy změnil svět.</p>
           <div class="movie-btn-container">
-            <button onclick="toggleModal('reservation-modal')" class="movie-card-btn">Rezervovat vstupenku</button>
+            <button onclick="openReservationForEvent('Michael')" class="movie-card-btn">Rezervovat vstupenku</button>
           </div>
         </div>
       </div>
@@ -802,7 +802,7 @@
             Po ničivých událostech, které změnily celý vesmír, stojí poslední přeživší Avengers před nejtěžší výzvou svého života. Čeká je odvážná mise, která může napravit minulost a vrátit naději miliardám lidí. Připravte se na velkolepé finále plné emocí, napětí, humoru a nezapomenutelných okamžiků.  
           </p>
             <div class="movie-btn-container">
-            <button onclick="toggleModal('reservation-modal')" class="movie-card-btn">Rezervovat vstupenku</button>
+            <button onclick="openReservationForEvent('Avengers: Endgame (2019)')" class="movie-card-btn">Rezervovat vstupenku</button>
           </div>
         </div>
       </div>
@@ -824,7 +824,7 @@
                 Dva odvěcí rivalové se znovu utkají v nejslavnějším českém derby. Buďte u toho s námi na velkém plátně!
           </p>
           <div class="movie-btn-container">
-            <button onclick="toggleModal('reservation-modal')" class="movie-card-btn">Rezervovat vstupenku</button>
+            <button onclick="openReservationForEvent('Derby pražských &quot;S&quot;')" class="movie-card-btn">Rezervovat vstupenku</button>
           </div>
         </div>
       </div>
@@ -1021,7 +1021,7 @@
       
       <div class="originals-intro-text" style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 25px;">
         <p style="font-size: 1.1rem; line-height: 1.8; opacity: 0.9;">
-          Projekt <strong>KVM Originals</strong> přináší exkluzivní autorské filmy, které vznikají přímo v autentických prostorech našeho mlýna. Necháváme ožít jedinečnou atmosféru tohoto místa, jeho bohatou historii a propojujeme je s napínavými příběhy. Každý snímek z této produkce je stvořen speciálně pro plátno Kina ve mlýně a nikde jinde ho neuvidíte.
+          Projekt <strong>KVM Originals</strong> přináší exkluzivní autorské filmy, které vznikají přímo v autentických prostorech našeho mlýna. Necháváme ožít jedinečnou atmosféru tohoto mlýna, jeho bohatou historii a propojujeme je s napínavými příběhy. Každý snímek z této produkce je stvořen speciálně pro plátno Kina ve mlýně a nikde jinde ho neuvidíte.
         </p>
       </div>
 
@@ -1076,6 +1076,78 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   
   <script>
+    // --- SAMOSTATNÁ SPRÁVA OBSAZENOSTI MÍST PRO KAŽDOU UDÁLOST ---
+    // Zde můžeš jednoduše přepisovat "volno" na "obsazeno" podle přicházejících e-mailů.
+    const eventSeats = {
+      "Slavnostní otevření kina": {
+        1: "volno",
+        2: "volno",
+        3: "obsazeno", // Místo 3 je obsazené (dle tvého zadání)
+        4: "obsazeno", // Místo 4 je obsazené
+        5: "obsazeno", // Místo 5 je obsazené
+        6: "obsazeno"  // Místo 6 je obsazené
+      },
+      "Michael": {
+        1: "volno",
+        2: "obsazeno", // Místo 2 je obsazené (dle tvého zadání)
+        3: "volno",
+        4: "volno",
+        5: "volno",
+        6: "volno"
+      },
+      "Avengers: Endgame (2019)": {
+        1: "volno",
+        2: "volno",
+        3: "volno",
+        4: "volno",
+        5: "volno",
+        6: "volno"
+      },
+      "Derby pražských \"S\"": {
+        1: "volno",
+        2: "volno",
+        3: "volno",
+        4: "volno",
+        5: "volno",
+        6: "volno"
+      }
+    };
+
+    // Funkce, která po změně události v selectu (nebo při otevření) aktualizuje vzhled sedadel
+    function onEventChange() {
+      const selectedEvent = document.getElementById('event-select').value;
+      const seats = document.querySelectorAll('.cinema-hall .seat');
+      
+      // Vyčistit předchozí výběr uživatele
+      document.getElementById('selected-seat-input').value = "";
+      seats.forEach(s => s.classList.remove('selected'));
+
+      if (!selectedEvent || !eventSeats[selectedEvent]) {
+        // Pokud není vybrána konkrétní událost, nechej vše jako volné
+        seats.forEach(s => s.classList.remove('occupied'));
+        return;
+      }
+
+      const currentSeatsStatus = eventSeats[selectedEvent];
+
+      seats.forEach(seat => {
+        const seatNum = seat.getAttribute('data-seat');
+        if (currentSeatsStatus[seatNum] === "obsazeno") {
+          seat.classList.add('occupied');
+        } else {
+          seat.classList.remove('occupied');
+        }
+      });
+    }
+
+    // Pomocná funkce pro otevření modálního okna rezervace přímo s vybraným filmem
+    function openReservationForEvent(eventName) {
+      const select = document.getElementById('event-select');
+      select.value = eventName;
+      onEventChange(); // Hned aktualizuje plánek pro danou událost
+      toggleModal('reservation-modal');
+    }
+
     // Funkce pro zobrazení/skrytí balíčků pronájmu kina
     function togglePackages() {
       const container = document.getElementById('cinema-packages');
