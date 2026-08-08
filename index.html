@@ -656,13 +656,13 @@
         <div class="seating-row" data-row="1.">
           <div class="seat" data-seat="1" onclick="selectSeat(this)">1</div>
           <div class="seat" data-seat="2" onclick="selectSeat(this)">2</div>
-          <div class="seat occupied" data-seat="3">3</div>
+          <div class="seat" data-seat="3" onclick="selectSeat(this)">3</div>
         </div>
         
         <div class="seating-row" data-row="2.">
-          <div class="seat occupied" data-seat="4">4</div>
-          <div class="seat occupied" data-seat="5">5</div>
-          <div class="seat occupied" data-seat="6">6</div>
+          <div class="seat" data-seat="4" onclick="selectSeat(this)">4</div>
+          <div class="seat" data-seat="5" onclick="selectSeat(this)">5</div>
+          <div class="seat" data-seat="6" onclick="selectSeat(this)">6</div>
         </div>
 
         <div class="seating-legend">
@@ -787,7 +787,7 @@
       <div class="movie-card">
         <div class="movie-img-container">
           <span class="movie-badge">Akční, dobrodružný, sci-fi</span>
-          <span class="movie-badge" style="top: 45px;">⭐ Epické zakončení legendární ságy Marvel</span>
+          <span class="movie-badge">⭐ Epické zakončení legendární ságy Marvel</span>
           <img src="https://i.postimg.cc/6Q12X9hr/IMG-0349.png" alt="Avengers: Endgame (2019)">
         </div>
         <div class="movie-content">
@@ -1104,7 +1104,7 @@
     
     function refreshCursorListeners() {
       if (window.matchMedia("(pointer: fine)").matches) {
-        const interactiveElements = document.querySelectorAll('a, button, select, input, .menu-btn, .close-modal, .seat:not(.occupied), .package-toggle-btn, .chat-chip');
+        const interactiveElements = document.querySelectorAll('a, button, select, input, .menu-btn, .close-modal, .seat, .package-toggle-btn, .chat-chip');
         interactiveElements.forEach(el => {
             el.removeEventListener('mouseenter', addCursorHover);
             el.removeEventListener('mouseleave', removeCursorHover);
