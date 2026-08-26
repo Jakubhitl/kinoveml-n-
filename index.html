@@ -1,4 +1,4 @@
-<!DOCTYPE html>     
+TYPE html>
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
@@ -125,25 +125,6 @@
     }
     @keyframes shine { to { background-position: 200% center; } }
     header p { font-size:clamp(0.95rem, 4vw, 1.2rem); max-width:700px; margin: 0 auto 30px auto; line-height: 1.7; opacity: 0.9; }
-
-    /* ODPOČET */
-    .countdown-wrapper { 
-        display: flex; gap: 15px; justify-content: center; margin-top: 40px; flex-wrap: wrap; 
-    }
-    .time-box {
-      background: rgba(255,255,255,0.02); border: 1px solid rgba(212, 175, 55, 0.3);
-      padding: 15px 10px; border-radius: 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      min-width: 80px; flex: 1 1 80px; max-width: 120px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(212, 175, 55, 0.05);
-    }
-    .time-box span { display: block; font-size: clamp(1.8rem, 6vw, 2.5rem); font-weight: 800; color: #d4af37; line-height: 1; }
-    .time-box p { font-size: 0.75rem; margin-top: 5px; color: #f1f1f1; text-transform: uppercase; letter-spacing: 1px; }
-    
-    @media (max-width: 480px) {
-      .countdown-wrapper { gap: 12px; margin-top: 30px; }
-      .time-box { flex: 1 1 calc(50% - 12px); max-width: none; padding: 15px 5px; border-radius: 14px; }
-      .time-box span { font-size: 2rem; }
-    }
 
     /* SEKCE OBECNĚ */
     section { padding: 60px 5%; position: relative; overflow: hidden; }
@@ -682,9 +663,7 @@
         
         <select name="Vybraná událost" id="event-select" onchange="onEventChange()" required>
           <option value="" disabled selected>Vyberte událost</option>
-          <option value="Slavnostní otevření kina">Slavnostní otevření kina</option>
           <option value="Michael">Michael</option>
-          <option value="Avengers: Endgame (2019)">Avengers: Endgame (2019)</option>
           <option value="Derby pražských &quot;S&quot;">Derby pražských "S"</option>
         </select>
 
@@ -728,14 +707,7 @@
   <header id="uvod">
     <div class="content" data-aos="zoom-in" data-aos-duration="1500">
       <h1>Kino ve mlýně</h1>
-      <p>Soukromé kino ve Vémyslicích – právě v rekonstrukci. Velká premiéra kina 20. srpna 2026.</p>
-      
-      <div class="countdown-wrapper">
-        <div class="time-box"><span id="days">00</span><p>Dní</p></div>
-        <div class="time-box"><span id="hours">00</span><p>Hodin</p></div>
-        <div class="time-box"><span id="minutes">00</span><p>Minut</p></div>
-        <div class="time-box"><span id="seconds">00</span><p>Sekund</p></div>
-      </div>
+      <p>Soukromé kino ve Vémyslicích – právě v rekonstrukci.</p>
     </div>
   </header>
 
@@ -743,26 +715,6 @@
     <h2 data-aos="fade-up">Aktuální Program</h2>
     
     <div class="program-grid" data-aos="fade-up" data-aos-delay="200">
-      
-      <div class="movie-card">
-        <div class="movie-img-container">
-          <span class="movie-badge">Slavnostní Otevření</span>
-          <img src="https://i.postimg.cc/QMZrtc45/88977FE5-1E8D-440D-B64F-ABC9B9878C98.png" alt="Slavnostní otevření">
-        </div>
-        <div class="movie-content">
-          <h3 class="movie-title">Slavnostní otevření kina</h3>
-          <div class="movie-details">
-            <div class="movie-detail-item">⏱ <strong>od 17:15</strong></div>
-            <div class="movie-detail-item">💰 <strong>50 Kč</strong></div>
-            <div class="movie-detail-item">📅 <strong>20. 8. 2026</strong></div>
-            <div class="movie-detail-item">🍿 <strong>Včetně programu</strong></div>
-          </div>
-          <p class="movie-desc">Kompletní program zahájení provozu: Čeká vás detailní prohlídka kina, představení nového filmu a také se můžete těšit na celovečerní kultovní pecku <strong>Simpsonovi ve filmu</strong>!</p>
-          <div class="movie-btn-container">
-            <button onclick="openReservationForEvent('Slavnostní otevření kina')" class="movie-card-btn">Rezervovat vstupenku</button>
-          </div>
-        </div>
-      </div>
 
       <div class="movie-card">
         <div class="movie-img-container">
@@ -780,29 +732,6 @@
           <p class="movie-desc">Strhující životopisný snímek o králi popu, Michaelu Jacksonovi. Nahlédněte do zákulisí jeho neuvěřitelné kariéry, složitého osobního života a objevte hudební génia, který navždy změnil svět.</p>
           <div class="movie-btn-container">
             <button onclick="openReservationForEvent('Michael')" class="movie-card-btn">Rezervovat vstupenku</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="movie-card">
-        <div class="movie-img-container">
-          <span class="movie-badge">Akční, dobrodružný, sci-fi</span>
-          <span class="movie-badge">⭐ Epické zakončení legendární ságy Marvel</span>
-          <img src="https://i.postimg.cc/6Q12X9hr/IMG-0349.png" alt="Avengers: Endgame (2019)">
-        </div>
-        <div class="movie-content">
-          <h3 class="movie-title">Avengers: Endgame (2019)</h3>
-          <div class="movie-details">
-            <div class="movie-detail-item">⏱ <strong>Příchod 14:30</strong></div>
-            <div class="movie-detail-item">💰 <strong>30 kč</strong></div>
-            <div class="movie-detail-item">📅 <strong>31.8</strong></div>
-            <div class="movie-detail-item">⏳ <strong>3 h 1 min</strong></div>
-          </div>
-          <p class="movie-desc">
-            Po ničivých událostech, které změnily celý vesmír, stojí poslední přeživší Avengers před nejtěžší výzvou svého života. Čeká je odvážná mise, která může napravit minulost a vrátit naději miliardám lidí. Připravte se na velkolepé finále plné emocí, napětí, humoru a nezapomenutelných okamžiků.  
-          </p>
-            <div class="movie-btn-container">
-            <button onclick="openReservationForEvent('Avengers: Endgame (2019)')" class="movie-card-btn">Rezervovat vstupenku</button>
           </div>
         </div>
       </div>
@@ -953,10 +882,6 @@
             <p>Kapacita pouhých 6 diváků zaručuje maximální soukromí a prémiové pohodlí.</p>
           </div>
           <div class="feature-card">
-            <h3>🍿 Velká premiéra</h3>
-            <p>Otevíráme <strong>20. srpna 2026</strong>. Těšit se můžeš na prohlídku kina a celovečerní film Simpsonovi ve filmu.</p>
-          </div>
-          <div class="feature-card">
             <h3>🔊 Zvuk a projekce</h3>
             <p>BenQ projektor (kvalita obrazu full hd) doplněný o Hi-Fi systém Sony MHC-BX6AV, reproduktory Tesla a Daewoo spolu s pořádným PA subwooferem pro hluboké basy. Velikost obrazu cca 120 palců. </p>
           </div>
@@ -988,12 +913,6 @@
         <div class="event-content">
           <span class="event-date">Fáze 3</span>
           <p class="event-text"> Montáž techniky a nábytku, dodělávání posledních detailů.</p>
-        </div>
-      </div>
-      <div class="event" data-aos="fade-up" data-aos-delay="300">
-        <div class="event-content">
-          <span class="event-date">20.8. 2026</span>
-          <p class="event-text">Velké finále. Slavnostní otevření a první oficiální promítání pro veřejnost.</p>
         </div>
       </div>
     </div>
@@ -1055,7 +974,6 @@
     <h3 style="color:#d4af37; margin-bottom:15px; font-size: 1.1rem; font-weight: 700;">Vision AI</h3>
     
     <div class="chat-chips-grid">
-      <button class="chat-chip" onclick="askQuestion('📅 Kdy přesně otevíráte?')">📅 Otevíračka</button>
       <button class="chat-chip" onclick="askQuestion('🪑 Kolik je v sále míst?')">🪑 Kapacita</button>
       <button class="chat-chip" onclick="askQuestion('🎟️ Jaká je cena lístku?')">🎟️ Ceny lístků</button>
       <button class="chat-chip" onclick="askQuestion('🎬 Můžu si pronajmout celé kino a kolik to stojí?')">🎬 Pronájem kina</button>
@@ -1077,30 +995,13 @@
   
   <script>
     // --- SAMOSTATNÁ SPRÁVA OBSAZENOSTI MÍST PRO KAŽDOU UDÁLOST ---
-    // Zde můžeš jednoduše přepisovat "volno" na "obsazeno" podle přicházejících e-mailů.
     const eventSeats = {
-      "Slavnostní otevření kina": {
-        1: "obsazeno",
-        2: "obsazeno",
-        3: "obsazeno", // Místo 3 je obsazené (dle tvého zadání)
-        4: "obsazeno", // Místo 4 je obsazené
-        5: "obsazeno", // Místo 5 je obsazené
-        6: "obsazeno"  // Místo 6 je obsazené
-      },
       "Michael": {
         1: "volno",
-        2: "obsazeno", // Místo 2 je obsazené (dle tvého zadání)
+        2: "obsazeno",
         3: "volno",
         4: "obsazeno",
         5: "obsazeno",
-        6: "volno"
-      },
-      "Avengers: Endgame (2019)": {
-        1: "volno",
-        2: "obsazeno",
-        3: "volno",
-        4: "volno",
-        5: "volno",
         6: "volno"
       },
       "Derby pražských \"S\"": {
@@ -1113,17 +1014,14 @@
       }
     };
 
-    // Funkce, která po změně události v selectu (nebo při otevření) aktualizuje vzhled sedadel
     function onEventChange() {
       const selectedEvent = document.getElementById('event-select').value;
       const seats = document.querySelectorAll('.cinema-hall .seat');
       
-      // Vyčistit předchozí výběr uživatele
       document.getElementById('selected-seat-input').value = "";
       seats.forEach(s => s.classList.remove('selected'));
 
       if (!selectedEvent || !eventSeats[selectedEvent]) {
-        // Pokud není vybrána konkrétní událost, nechej vše jako volné
         seats.forEach(s => s.classList.remove('occupied'));
         return;
       }
@@ -1140,15 +1038,13 @@
       });
     }
 
-    // Pomocná funkce pro otevření modálního okna rezervace přímo s vybraným filmem
     function openReservationForEvent(eventName) {
       const select = document.getElementById('event-select');
       select.value = eventName;
-      onEventChange(); // Hned aktualizuje plánek pro danou událost
+      onEventChange();
       toggleModal('reservation-modal');
     }
 
-    // Funkce pro zobrazení/skrytí balíčků pronájmu kina
     function togglePackages() {
       const container = document.getElementById('cinema-packages');
       const btn = document.getElementById('show-packages-btn');
@@ -1162,7 +1058,6 @@
       if (typeof refreshCursorListeners === "function") { refreshCursorListeners(); }
     }
 
-    // Funkce pro rozbalení/zabalení formuláře pronájmu
     function toggleRentalForm(formId) {
       const forms = document.querySelectorAll('.rental-form-container');
       forms.forEach(f => { if(f.id !== formId) f.classList.remove('active'); });
@@ -1170,7 +1065,6 @@
       if (typeof refreshCursorListeners === "function") { refreshCursorListeners(); }
     }
 
-    // Optimalizovaný vlastní kurzor s detekcí hover stavů
     const cursorDot = document.querySelector('.cursor-dot');
     const cursorOutline = document.querySelector('.cursor-outline');
     
@@ -1231,20 +1125,6 @@
 
     AOS.init({ duration: 1000, once: true, offset: 50 });
 
-    const countDownDate = new Date("Aug 20, 2026 16:45:00").getTime();
-
-    const countdownInterval = setInterval(() => {
-      const distance = countDownDate - new Date().getTime();
-      if (distance < 0) {
-        clearInterval(countdownInterval);
-        return;
-      }
-      document.getElementById("days").innerText = Math.floor(distance / 86400000).toString().padStart(2, '0');
-      document.getElementById("hours").innerText = Math.floor((distance % 86400000) / 3600000).toString().padStart(2, '0');
-      document.getElementById("minutes").innerText = Math.floor((distance % 3600000) / 60000).toString().padStart(2, '0');
-      document.getElementById("seconds").innerText = Math.floor((distance % 60000) / 1000).toString().padStart(2, '0');
-    }, 1000);
-
     function toggleMenu() {
       if (window.innerWidth <= 900) {
         document.getElementById("nav-list").classList.toggle("active");
@@ -1291,9 +1171,8 @@
     function toggleJarvin() { document.getElementById("jarvin-window").classList.toggle("active"); }
 
     const faqAnswers = {
-      "📅 Kdy přesně otevíráte?": "Velká premiéra a slavnostní otevření Kina ve mlýně proběhne 20. srpna 2026",
       "🪑 Kolik je v sále míst?": "Sál má komorní kapacitu pouhých 6 míst. Díky tomu si užiješ maximální soukromí, pohodlí a prémiový zážitek.",
-      "🎟️ Jaká je cena lístku?": "Vstupenka na slavnostní otevření stojí 50 Kč (včetně celého programu a popcornu). Na běžné promítání (např. film Michael) je cena 35 Kč za osobu.",
+      "🎟️ Jaká je cena lístku?": "Na běžné promítání (např. film Michael) je cena 35 Kč za osobu.",
       "🎬 Můžu si pronajmout celé kino a kolik to stojí?": "Ano, celé kino si můžeš pronajmout jen pro sebe a své přátele! Nabízíme 3 balíčky: Basic za 349 Kč (až 2 hodiny), Standard za 499 Kč (až 3 hodiny + popcorn zdarma) a VIP za 799 Kč (až 5 hodin, popcorn, nápoje + 30% sleva na baru). Podrobnosti najdeš v sekci Program pod Zobrazit více.",
       "⭐ Který balíček na pronájem je nejvýhodnější?": "Zlatou střední cestou je Standard (499 Kč) – získáš nejlepší poměr ceny a výkonu (Netflix, Disney+, HBO Max, zdarma popcorn pro každého a až 3 hodiny). Záleží ale na situaci: Na krátký film stačí Basic (349 Kč), pro pořádný filmový večer se slevou na baru je nejlepší VIP (899 Kč).",
       "🆔 Co je to KinoID a jaké má výhody?": "Bezplatná registrace, se kterou získáš 10% slevu na první vstupenku nebo pronájem a přednostní přístup ke všem novinkám z naší autorské produkce KVM Originals."
@@ -1327,7 +1206,6 @@
           response = faqAnswers[text];
         } else {
           const replies = [
-            "Otevíráme slavnostně v srpnu 2026!",
             "Kapacita sálu je komorní 6 osob.",
             "Těšíme se na vaši návštěvu!",
             "Vstupenky je možné rezervovat v okně přímo u filmu s platbou na místě či QR kódem."
