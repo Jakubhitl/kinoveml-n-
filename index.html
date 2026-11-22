@@ -1,4 +1,3 @@
-
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
@@ -713,141 +712,12 @@
   <section id="program" style="background: #080808;">
     <h2 data-aos="fade-up">Aktuální Program</h2>
     
-    <div class="program-grid" data-aos="fade-up" data-aos-delay="200">
-
-      
-
-      <div class="movie-card">
-        <div class="movie-img-container">
-          <span class="movie-badge">Sport (živé vysílání)</span>
-          <img src="https://i.postimg.cc/FHpzfZ6K/IMG-0289.jpg" alt="Džob">
-        </div>
-        <div class="movie-content">
-          <h3 class="movie-title">Derby pražských "S" (Sparta vs Slavia)</h3>
-          <div class="movie-details">
-            <div class="movie-detail-item">⏱ <strong>19:35</strong></div>
-            <div class="movie-detail-item">💰 <strong>35kč</strong></div>
-            <div class="movie-detail-item">📅 <strong>30.8</strong></div>
-            <div class="movie-detail-item">⏳ <strong>Neznámo</strong></div>
-          </div>
-          <p class="movie-desc">
-                Dva odvěcí rivalové se znovu utkají v nejslavnějším českém derby. Buďte u toho s námi na velkém plátně!
-          </p>
-          <div class="movie-btn-container">
-            <button onclick="openReservationForEvent('Derby pražských &quot;S&quot;')" class="movie-card-btn">Rezervovat vstupenku</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="movie-card">
-        <div class="movie-img-container">
-          <span class="movie-badge">Exkluzivní Služba</span>
-          <img src="https://i.postimg.cc/x8ZZ0MC9/IMG-0267.jpg" alt="Pronajmutí kina">
-        </div>
-        <div class="movie-content">
-          <h3 class="movie-title">Pronajmutí kina</h3>
-          <p class="movie-desc">Užijte si jedinečný filmový večer v naprostém soukromí historického mlýna. Vyberte si jeden z našich výhodných balíčků a zarezervujte si celý sál jen pro sebe a své přátele či rodinu.</p>
-          
-          <div class="movie-btn-container" style="margin-bottom: 15px;">
-            <button id="show-packages-btn" onclick="togglePackages()" class="movie-card-btn">Zobrazit více</button>
-          </div>
-
-          <div class="packages-container" id="cinema-packages">
-            
-            <div class="package-box">
-              <div class="package-header">
-                <span class="package-name">🎬 Basic</span>
-                <span class="package-price">349 Kč</span>
-              </div>
-              <p style="font-size: 0.8rem; opacity: 0.8;">Ideální pro nenáročný filmový večer.</p>
-              <ul class="package-features">
-                <li>Pronájem celého kina</li>
-                <li>Až 6 osob</li>
-                <li>Výběr z filmů dostupných pouze na Netflixu</li>
-                <li>Délka pronájmu až 2 hodiny</li>
-              </ul>
-              <button class="package-toggle-btn" onclick="toggleRentalForm('form-basic')">Rezervovat</button>
-              
-              <div id="form-basic" class="rental-form-container">
-                <form action="https://formsubmit.co/kinovemlyne@seznam.cz" method="POST" class="rental-form">
-                  <input type="hidden" name="Balíček" value="Basic - 349 Kč">
-                  <input type="text" name="Jméno" placeholder="Jméno" required>
-                  <input type="text" name="Příjmení" placeholder="Příjmení" required>
-                  <input type="email" name="Email" placeholder="E-mail" required>
-                  <input type="tel" name="Telefon" placeholder="Telefon" required>
-                  <label>Termín pronájmu:</label>
-                  <input type="date" name="Termín" required>
-                  <label>Čas pronájmu:</label>
-                  <input type="time" name="Čas" required>
-                  <button type="submit">Odeslat poptávku</button>
-                </form>
-              </div>
-            </div>
-
-            <div class="package-box" style="border-color: rgba(212, 175, 55, 0.4);">
-              <div class="package-header">
-                <span class="package-name">⭐ Standard</span>
-                <span class="package-price">499 Kč</span>
-              </div>
-              <p style="font-size: 0.8rem; color: #d4af37; font-weight: 600;">Doporučujeme</p>
-              <ul class="package-features">
-                <li>Vše z balíčku Basic</li>
-                <li>Výběr z filmů na Netflix, Disney+ a HBO Max</li>
-                <li>Malý popcorn zdarma pro každého</li>
-                <li>Délka pronájmu až 3 hodiny</li>
-              </ul>
-              <button class="package-toggle-btn" style="background: rgba(212, 175, 55, 0.1);" onclick="toggleRentalForm('form-standard')">Rezervovat</button>
-              
-              <div id="form-standard" class="rental-form-container">
-                <form action="https://formsubmit.co/kinovemlyne@seznam.cz" method="POST" class="rental-form">
-                  <input type="hidden" name="Balíček" value="Standard - 499 Kč">
-                  <input type="text" name="Jméno" placeholder="Jméno" required>
-                  <input type="text" name="Příjmení" placeholder="Příjmení" required>
-                  <input type="email" name="Email" placeholder="E-mail" required>
-                  <input type="tel" name="Telefon" placeholder="Telefon" required>
-                  <label>Termín pronájmu:</label>
-                  <input type="date" name="Termín" required>
-                  <label>Čas pronájmu:</label>
-                  <input type="time" name="Čas" required>
-                  <button type="submit">Odeslat poptávku</button>
-                </form>
-              </div>
-            </div>
-
-            <div class="package-box">
-              <div class="package-header">
-                <span class="package-name">👑 VIP</span>
-                <span class="package-price">899 Kč</span>
-              </div>
-              <p style="font-size: 0.8rem; opacity: 0.8;">Nejlepší soukromý filmový zážitek.</p>
-              <ul class="package-features">
-                <li>Střední nápoj a malý popcorn zdarma pro každého</li>
-                <li>30% sleva na jídlo a pití u baru</li>
-                <li>Délka pronájmu až 5 hodiny</li>
-                <li>Výběr z platforem Netflix, Dysney+, Hbo max a One play</li>
-              </ul>
-              <button class="package-toggle-btn" onclick="toggleRentalForm('form-vip')">Rezervovat</button>
-              
-              <div id="form-vip" class="rental-form-container">
-                <form action="https://formsubmit.co/kinovemlyne@seznam.cz" method="POST" class="rental-form">
-                  <input type="hidden" name="Balíček" value="VIP - 899 Kč">
-                  <input type="text" name="Jméno" placeholder="Jméno" required>
-                  <input type="text" name="Příjmení" placeholder="Příjmení" required>
-                  <input type="email" name="Email" placeholder="E-mail" required>
-                  <input type="tel" name="Telefon" placeholder="Telefon" required>
-                  <label>Termín pronájmu:</label>
-                  <input type="date" name="Termín" required>
-                  <label>Čas pronájmu:</label>
-                  <input type="time" name="Čas" required>
-                  <button type="submit">Odeslat poptávku</button>
-                </form>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
+    <div style="max-width: 750px; margin: 0 auto; text-align: center; background: linear-gradient(135deg, rgba(20,20,20,0.8), rgba(10,10,10,0.95)); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 20px; padding: 45px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);" data-aos="fade-up" data-aos-delay="200">
+      <span class="movie-badge" style="position: static; display: inline-block; margin-bottom: 18px; font-size: 0.85rem;">Přestávka &amp; Úpravy</span>
+      <h3 style="font-size: 1.6rem; color: #fff; margin-bottom: 15px; font-weight: 700;">Sezóna kina začíná na jaře roku 2027</h3>
+      <p style="font-size: 1.05rem; line-height: 1.7; opacity: 0.85;">
+        Teď máme volno a probíhají úpravy kina, abychom pro vás vše připravili v ještě lepší kvalitě. Těšíme se na vás opět na jaře roku 2027!
+      </p>
     </div>
   </section>
 
