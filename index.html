@@ -378,6 +378,261 @@
     #map { height:100%; width: 100%; border-radius: 20px; z-index: 1; }
     @media (min-width: 768px) { #map { border-radius: 26px; } }
 
+    /* VIRTUÁLNÍ 3D PROHLÍDKA KINA */
+    .virtual-tour-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .virtual-tour-subtitle {
+      text-align: center;
+      max-width: 750px;
+      margin: -15px auto 30px;
+      font-size: 1rem;
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+    .vt-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .vt-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: #f1f1f1;
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .vt-btn:hover, .vt-btn.active {
+      background: #d4af37;
+      color: #050505;
+      border-color: #d4af37;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+    }
+    .vt-stage {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 2px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      background: linear-gradient(135deg, #1a0b2e 0%, #3b1d5e 28%, #0f4c81 62%, #ff6b35 100%);
+      transition: background 0.8s ease;
+      user-select: none;
+    }
+    @media (min-width: 768px) {
+      .vt-stage { height: 600px; }
+    }
+    .vt-stage.bg-aurora {
+      background: radial-gradient(circle at 20% 25%, #ff2a85 0%, transparent 45%),
+                  radial-gradient(circle at 80% 30%, #00d2ff 0%, transparent 50%),
+                  radial-gradient(circle at 50% 85%, #ff9a00 0%, transparent 55%),
+                  linear-gradient(135deg, #160933 0%, #0b2545 50%, #2b0f3a 100%);
+    }
+    .vt-stage.bg-sunset {
+      background: radial-gradient(circle at 75% 20%, #ffbe0b 0%, transparent 45%),
+                  radial-gradient(circle at 25% 75%, #fb5607 0%, transparent 50%),
+                  linear-gradient(135deg, #3a0ca3 0%, #7209b7 50%, #f72585 100%);
+    }
+    .vt-stage.bg-emerald {
+      background: radial-gradient(circle at 30% 20%, #06d6a0 0%, transparent 45%),
+                  radial-gradient(circle at 80% 80%, #118ab2 0%, transparent 50%),
+                  linear-gradient(135deg, #073b4c 0%, #1b4332 55%, #3c096c 100%);
+    }
+    #cinema-3d-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      outline: none;
+    }
+    .vt-hud-top {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      gap: 10px;
+      z-index: 10;
+    }
+    .vt-badge {
+      background: rgba(5, 5, 5, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: #f1f1f1;
+      padding: 7px 14px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      pointer-events: auto;
+    }
+    .vt-badge strong { color: #d4af37; }
+    .vt-top-actions {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .vt-mini-btn {
+      background: rgba(5, 5, 5, 0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      color: #d4af37;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .vt-mini-btn:hover {
+      background: #d4af37;
+      color: #050505;
+    }
+    /* Plovoucí klikací 3D popisky (Hotspots) */
+    .vt-hotspot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 10, 10, 0.85);
+      border: 1.5px solid #d4af37;
+      color: #fff;
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7), 0 0 10px rgba(212, 175, 55, 0.35);
+      transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+    }
+    .vt-hotspot:hover {
+      background: #d4af37;
+      color: #050505;
+      transform: translate(-50%, -50%) scale(1.1);
+      z-index: 12;
+    }
+    .vt-hotspot .hs-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #d4af37;
+      display: inline-block;
+      animation: hsPulse 1.6s infinite;
+    }
+    .vt-hotspot:hover .hs-dot { background: #050505; }
+    @keyframes hsPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+    }
+    /* Informační panel po kliknutí na reproduktor / plátno / sedadlo */
+    .vt-info-drawer {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      max-width: 460px;
+      background: rgba(10, 10, 12, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid #d4af37;
+      border-radius: 18px;
+      padding: 18px 20px;
+      z-index: 15;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.85);
+      display: none;
+      animation: slideUp 0.25s ease;
+    }
+    .vt-info-drawer.active { display: block; }
+    .vt-info-close {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .vt-info-close:hover { color: #d4af37; }
+    .vt-info-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #d4af37;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .vt-info-drawer h4 {
+      font-size: 1.15rem;
+      color: #fff;
+      margin-bottom: 6px;
+      padding-right: 20px;
+    }
+    .vt-info-drawer p {
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #d8d8d8;
+      margin: 0;
+    }
+    /* Rychlý výběr sedadel 1-6 pod 3D scénou */
+    .vt-seats-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      padding: 12px 16px;
+      border-radius: 16px;
+    }
+    .vt-seats-label {
+      font-size: 0.82rem;
+      color: #d4af37;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .vt-seat-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .vt-seat-pill:hover, .vt-seat-pill.active {
+      background: #d4af37;
+      color: #050505;
+    }
+
     /* ORIGINALS SEKCE */
     .originals-container {
       display: grid;
@@ -745,6 +1000,69 @@
     </div>
   </section>
 
+  <section id="virtualni-kino" style="background: #060608;">
+    <h2 data-aos="fade-up">Prohlédni si kino virtuálně</h2>
+    <p class="virtual-tour-subtitle" data-aos="fade-up" data-aos-delay="100">
+      Projdi si náš komorní 3D sál ve mlýně. Otáčej pohledem myší nebo prstem, pohybuj se klávesami <strong>WASD / šipkami</strong> a rozklikni si informace o plátně, reproduktorech i jednotlivých sedadlech.
+    </p>
+
+    <div class="virtual-tour-wrapper" data-aos="zoom-in" data-aos-delay="150">
+      <!-- Horní přepínače kamerových pohledů -->
+      <div class="vt-controls-bar">
+        <button class="vt-btn active" data-cam="overview" onclick="set3DCamera('overview', this)">🎥 Celý sál</button>
+        <button class="vt-btn" data-cam="row1" onclick="set3DCamera('row1', this)">🛋️ 1. řada (1–3)</button>
+        <button class="vt-btn" data-cam="row2" onclick="set3DCamera('row2', this)">👑 2. řada vyvýšená (4–6)</button>
+        <button class="vt-btn" data-cam="audio" onclick="set3DCamera('audio', this)">🔊 Zvuk &amp; 120" plátno</button>
+        <button class="vt-btn" data-cam="couches" onclick="set3DCamera('couches', this)">🔄 Pohled na gauče</button>
+      </div>
+
+      <!-- 3D Plátno scény s barevným pozadím -->
+      <div class="vt-stage bg-aurora" id="vt-stage">
+        <canvas id="cinema-3d-canvas"></canvas>
+
+        <!-- Horní HUD ovládání -->
+        <div class="vt-hud-top">
+          <div class="vt-badge">
+            <strong>3D Prohlídka:</strong> Tažením otáčej • Kolečkem přibliž • Klikni na popisky
+          </div>
+          <div class="vt-top-actions">
+            <button class="vt-mini-btn" onclick="cycleScreenSlide()" title="Přepnout animaci na plátně">🎞️ Přepnout plátno</button>
+            <button class="vt-mini-btn" onclick="cycleVtBackground()" title="Změnit barevné pozadí">🎨 Barva pozadí</button>
+            <button class="vt-mini-btn" onclick="toggleVtFullscreen()" title="Celá obrazovka">⛶ Celá obrazovka</button>
+          </div>
+        </div>
+
+        <!-- Klikací 3D hotspoty (pozicované v reálném čase z 3D souřadnic) -->
+        <button class="vt-hotspot" id="hs-screen" onclick="open3DInfo('screen')"><span class="hs-dot"></span> Plátno 120"</button>
+        <button class="vt-hotspot" id="hs-subwoofer" onclick="open3DInfo('subwoofer')"><span class="hs-dot"></span> PA Subwoofer</button>
+        <button class="vt-hotspot" id="hs-daewoo" onclick="open3DInfo('daewoo')"><span class="hs-dot"></span> Repro Daewoo</button>
+        <button class="vt-hotspot" id="hs-tesla-left" onclick="open3DInfo('teslaLeft')"><span class="hs-dot"></span> Tesla (L)</button>
+        <button class="vt-hotspot" id="hs-tesla-right" onclick="open3DInfo('teslaRight')"><span class="hs-dot"></span> Tesla (P)</button>
+        <button class="vt-hotspot" id="hs-couch1" onclick="open3DInfo('couch1')"><span class="hs-dot"></span> 1. gauč (1–3)</button>
+        <button class="vt-hotspot" id="hs-couch2" onclick="open3DInfo('couch2')"><span class="hs-dot"></span> 2. gauč (4–6)</button>
+
+        <!-- Informační karta při rozkliknutí komponenty -->
+        <div class="vt-info-drawer" id="vt-info-drawer">
+          <button class="vt-info-close" onclick="close3DInfo()">&times;</button>
+          <span class="vt-info-tag" id="vt-info-tag">Vybavení sálu</span>
+          <h4 id="vt-info-title">Název prvku</h4>
+          <p id="vt-info-desc">Detailní popis vybraného prvku v kině.</p>
+        </div>
+      </div>
+
+      <!-- Přímý výběr pohledu ze sedadel 1 až 6 -->
+      <div class="vt-seats-bar">
+        <span class="vt-seats-label">🪑 Vyzkoušej výhled ze sedadla:</span>
+        <button class="vt-seat-pill" data-seat-cam="1" onclick="focusSeat3D(1, this)">Sedadlo 1 (1. řada vlevo)</button>
+        <button class="vt-seat-pill" data-seat-cam="2" onclick="focusSeat3D(2, this)">Sedadlo 2 (1. řada střed)</button>
+        <button class="vt-seat-pill" data-seat-cam="3" onclick="focusSeat3D(3, this)">Sedadlo 3 (1. řada vpravo)</button>
+        <button class="vt-seat-pill" data-seat-cam="4" onclick="focusSeat3D(4, this)">Sedadlo 4 (2. řada vlevo)</button>
+        <button class="vt-seat-pill" data-seat-cam="5" onclick="focusSeat3D(5, this)">Sedadlo 5 (2. řada střed)</button>
+        <button class="vt-seat-pill" data-seat-cam="6" onclick="focusSeat3D(6, this)">Sedadlo 6 (2. řada vpravo)</button>
+      </div>
+    </div>
+  </section>
+
   <section id="rekonstrukce" style="background: #080808;">
     <h2 data-aos="fade-up">Cesta k otevření</h2>
     <div class="timeline">
@@ -843,6 +1161,8 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   
   <script>
     // --- SAMOSTATNÁ SPRÁVA OBSAZENOSTI MÍST PRO KAŽDOU UDÁLOST ---
@@ -921,7 +1241,7 @@
     
     function refreshCursorListeners() {
       if (window.matchMedia("(pointer: fine)").matches) {
-        const interactiveElements = document.querySelectorAll('a, button, select, input, .menu-btn, .close-modal, .seat, .package-toggle-btn, .chat-chip');
+        const interactiveElements = document.querySelectorAll('a, button, select, input, .menu-btn, .close-modal, .seat, .package-toggle-btn, .chat-chip, .vt-btn, .vt-mini-btn, .vt-hotspot, .vt-seat-pill');
         interactiveElements.forEach(el => {
             el.removeEventListener('mouseenter', addCursorHover);
             el.removeEventListener('mouseleave', removeCursorHover);
@@ -1067,6 +1387,1081 @@
         chat.scrollTop = chat.scrollHeight;
       }, 600);
     }
+
+    // =========================================================================
+    // 3D VIRTUÁLNÍ PROHLÍDKA KINA VE MLÝNĚ (Monochromatický 3D model + barevné pozadí)
+    // =========================================================================
+    const infoDatabase3D = {
+      screen: {
+        tag: "Projekce • 120 palců",
+        title: "Projekční plátno (úhlopříčka 120 palců)",
+        desc: "Velkoformátové projekční plátno o úhlopříčce cca 120 palců (šířka přes 2,6 metru) zavěšené na historické kamenné zdi mlýna. Obraz zajišťuje projektor BenQ ve Full HD kvalitě. Na plátně se nyní promítá ukázka filmu Mlynář a pozvánka na Vémyslický háček 2027 (velké finále 5. června)."
+      },
+      subwoofer: {
+        tag: "Basový základ • Střed dole",
+        title: "PA Subwoofer (hluboké basy)",
+        desc: "Masivní PA subwoofer umístěný přímo uprostřed pod plátnem. Stará se o mohutnou basovou složku a filmové efekty, které díky kamenným zdem historického mlýna dodávají každé projekci atmosféru velkého kinosálu."
+      },
+      daewoo: {
+        tag: "Centrální kanál • Na subwooferu",
+        title: "Středový reproduktor Daewoo",
+        desc: "Kompaktní reproduktor značky Daewoo položený přímo nahoře uprostřed na PA subwooferu. Funguje jako centrální kanál pro čisté podání hlasů, dialogů a detailů přímo ze středu plátna."
+      },
+      teslaLeft: {
+        tag: "Levý stereo kanál • Vlevo nahoře",
+        title: "Reproduktor Tesla (levý)",
+        desc: "Klasický reproduktor značky Tesla umístěný vlevo nahoře na dřevěném reproboxu. Je napojen na Hi-Fi systém Sony MHC-BX6AV a tvoří levý zvukový kanál sálu."
+      },
+      teslaRight: {
+        tag: "Pravý stereo kanál • Vpravo nahoře",
+        title: "Reproduktor Tesla (pravý)",
+        desc: "Druhý reproduktor značky Tesla umístěný vpravo nahoře na dřevěném podstavci. Společně s levým reproduktorem Tesla, centrálním Daewoo a PA subwooferem vytváří plný prostorový zvuk."
+      },
+      couch1: {
+        tag: "1. řada • Sedadla 1, 2, 3",
+        title: "Přední gauč (místa 1–3 zleva doprava)",
+        desc: "Pohodlný třímístný gauč v první řadě přímo před plátnem. Místa jsou číslována zleva doprava: Sedadlo 1 (vlevo), Sedadlo 2 (uprostřed) a Sedadlo 3 (vpravo)."
+      },
+      couch2: {
+        tag: "2. řada • Sedadla 4, 5, 6",
+        title: "Vyvýšený zadní gauč (místa 4–6 zleva doprava)",
+        desc: "Třímístný gauč umístěný na dřevěné paletové konstrukci ve druhé řadě pro nerušený výhled přes první řadu. Číslování zleva doprava: Sedadlo 4 (vlevo), Sedadlo 5 (uprostřed) a Sedadlo 6 (vpravo)."
+      }
+    };
+
+    function open3DInfo(key) {
+      const item = infoDatabase3D[key];
+      if (!item) return;
+      document.getElementById('vt-info-tag').innerText = item.tag;
+      document.getElementById('vt-info-title').innerText = item.title;
+      document.getElementById('vt-info-desc').innerText = item.desc;
+      document.getElementById('vt-info-drawer').classList.add('active');
+    }
+
+    function close3DInfo() {
+      document.getElementById('vt-info-drawer').classList.remove('active');
+    }
+
+    const vtBgClasses = ['bg-aurora', 'bg-sunset', 'bg-emerald'];
+    let vtBgIndex = 0;
+    function cycleVtBackground() {
+      const stage = document.getElementById('vt-stage');
+      stage.classList.remove(vtBgClasses[vtBgIndex]);
+      vtBgIndex = (vtBgIndex + 1) % vtBgClasses.length;
+      stage.classList.add(vtBgClasses[vtBgIndex]);
+    }
+
+    function toggleVtFullscreen() {
+      const stage = document.getElementById('vt-stage');
+      if (!document.fullscreenElement) {
+        if (stage.requestFullscreen) stage.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    // Globální ovládání 3D scény
+    let vtCamera, vtControls, vtRenderer, vtScene;
+    let vtCamTargetPos = null;
+    let vtCamTargetLook = null;
+    let vtScreenSlideMode = 'auto'; // 'auto', 'mlynar', 'hacek'
+    let vtManualSlideStart = 0;
+
+    function cycleScreenSlide() {
+      if (vtScreenSlideMode === 'auto' || vtScreenSlideMode === 'hacek') {
+        vtScreenSlideMode = 'mlynar';
+      } else {
+        vtScreenSlideMode = 'hacek';
+      }
+      vtManualSlideStart = performance.now();
+    }
+
+    const vtCameraPresets = {
+      overview: { pos: [1.65, 2.15, 2.35], look: [-0.25, 1.15, -1.6] },
+      row1:     { pos: [-0.25, 1.08, -0.58], look: [-0.25, 1.55, -2.95] },
+      row2:     { pos: [-0.25, 1.42, 0.80], look: [-0.25, 1.52, -2.95] },
+      audio:    { pos: [-0.25, 1.15, -1.35], look: [-0.25, 1.12, -2.85] },
+      couches:  { pos: [-1.45, 1.55, -2.15], look: [-0.15, 0.85, 0.35] }
+    };
+
+    function set3DCamera(presetName, btnEl) {
+      const p = vtCameraPresets[presetName];
+      if (!p || !vtCamera) return;
+      vtCamTargetPos = new THREE.Vector3(...p.pos);
+      vtCamTargetLook = new THREE.Vector3(...p.look);
+
+      document.querySelectorAll('.vt-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      document.querySelectorAll('.vt-seat-pill').forEach(s => s.classList.remove('active'));
+    }
+
+    function focusSeat3D(seatNum, pillEl) {
+      const seatPositions = {
+        1: { pos: [-0.90, 1.06, -0.60], look: [-0.25, 1.58, -2.95], row: "1. řada (přední gauč) – vlevo" },
+        2: { pos: [-0.25, 1.06, -0.60], look: [-0.25, 1.58, -2.95], row: "1. řada (přední gauč) – uprostřed" },
+        3: { pos: [ 0.40, 1.06, -0.60], look: [-0.25, 1.58, -2.95], row: "1. řada (přední gauč) – vpravo" },
+        4: { pos: [-0.90, 1.40,  0.78], look: [-0.25, 1.55, -2.95], row: "2. řada (vyvýšený gauč) – vlevo" },
+        5: { pos: [-0.25, 1.40,  0.78], look: [-0.25, 1.55, -2.95], row: "2. řada (vyvýšený gauč) – uprostřed" },
+        6: { pos: [ 0.40, 1.40,  0.78], look: [-0.25, 1.55, -2.95], row: "2. řada (vyvýšený gauč) – vpravo" }
+      };
+      const sp = seatPositions[seatNum];
+      if (!sp || !vtCamera) return;
+
+      vtCamTargetPos = new THREE.Vector3(...sp.pos);
+      vtCamTargetLook = new THREE.Vector3(...sp.look);
+
+      document.querySelectorAll('.vt-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.vt-seat-pill').forEach(s => s.classList.remove('active'));
+      if (pillEl) pillEl.classList.add('active');
+
+      document.getElementById('vt-info-tag').innerText = "Pohled diváka • Sedadlo č. " + seatNum;
+      document.getElementById('vt-info-title').innerText = "Sedadlo číslo " + seatNum + " (" + sp.row + ")";
+      document.getElementById('vt-info-desc').innerText = "Právě se díváš na 120\" plátno přímo z místa č. " + seatNum + ". Můžeš se myší nebo prstem rozhlédnout po celém sále.";
+      document.getElementById('vt-info-drawer').classList.add('active');
+    }
+
+    (function initCinema3D() {
+      const canvas = document.getElementById('cinema-3d-canvas');
+      const stage = document.getElementById('vt-stage');
+      if (!canvas || !stage || typeof THREE === 'undefined') return;
+
+      // Scéna s průhledným pozadím (aby prosvítalo barevné pozadí .vt-stage)
+      vtScene = new THREE.Scene();
+
+      const width = stage.clientWidth || 800;
+      const height = stage.clientHeight || 550;
+      vtCamera = new THREE.PerspectiveCamera(52, width / height, 0.1, 50);
+      vtCamera.position.set(1.65, 2.15, 2.35);
+
+      vtRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      vtRenderer.setSize(width, height);
+      vtRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      vtControls = new THREE.OrbitControls(vtCamera, vtRenderer.domElement);
+      vtControls.target.set(-0.25, 1.15, -1.6);
+      vtControls.enableDamping = true;
+      vtControls.dampingFactor = 0.06;
+      vtControls.minDistance = 0.4;
+      vtControls.maxDistance = 6.2;
+      vtControls.maxPolarAngle = Math.PI * 0.88;
+      vtControls.update();
+
+      // Zrušení automatického přeletu kamery, když uživatel sám chytne scénu
+      vtControls.addEventListener('start', () => {
+        vtCamTargetPos = null;
+        vtCamTargetLook = null;
+      });
+
+      // Osvětlení pro čistý monochromatický architektonický 3D model
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x333333, 1.05);
+      vtScene.add(hemiLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.75);
+      dirLight1.position.set(2.5, 4.5, 3.0);
+      vtScene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0xe6e6e6, 0.45);
+      dirLight2.position.set(-3.0, 2.5, -2.0);
+      vtScene.add(dirLight2);
+
+      // Pomocná funkce: Monochromatický materiál + jemné architektonické hrany (bez pestrých barev!)
+      function createMonoMat(hexGray, roughness = 0.85, metalness = 0.05) {
+        return new THREE.MeshStandardMaterial({
+          color: hexGray,
+          roughness: roughness,
+          metalness: metalness
+        });
+      }
+
+      function addEdgeLines(mesh, lineHex = 0x222222, opacity = 0.35) {
+        const edges = new THREE.EdgesGeometry(mesh.geometry, 25);
+        const lineMat = new THREE.LineBasicMaterial({ color: lineHex, transparent: true, opacity: opacity });
+        const lineSegments = new THREE.LineSegments(edges, lineMat);
+        mesh.add(lineSegments);
+      }
+
+      // Textura kamenné zdi (monochromatická šedá)
+      function createStoneMonoTexture() {
+        const c = document.createElement('canvas');
+        c.width = 512; c.height = 512;
+        const g = c.getContext('2d');
+        g.fillStyle = '#9e9e9e';
+        g.fillRect(0, 0, 512, 512);
+        for (let i = 0; i < 160; i++) {
+          const x = Math.random() * 512;
+          const y = Math.random() * 512;
+          const w = 22 + Math.random() * 48;
+          const h = 14 + Math.random() * 28;
+          const shade = Math.floor(125 + Math.random() * 55);
+          g.fillStyle = `rgb(${shade},${shade},${shade})`;
+          g.beginPath();
+          g.roundRect(x, y, w, h, 5);
+          g.fill();
+          g.strokeStyle = 'rgba(60,60,60,0.45)';
+          g.lineWidth = 2;
+          g.stroke();
+        }
+        const tex = new THREE.CanvasTexture(c);
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(2, 2);
+        return tex;
+      }
+
+      // Textura pruhovaných polštářů na 2. gauči (monochromatická šedá podle fotky 2)
+      function createStripedCushionMonoTexture() {
+        const c = document.createElement('canvas');
+        c.width = 256; c.height = 256;
+        const g = c.getContext('2d');
+        const shades = ['#b8b8b8', '#787878', '#dcdcdc', '#5e5e5e', '#a2a2a2'];
+        let y = 0;
+        let idx = 0;
+        while (y < 256) {
+          const h = 12 + (idx % 3) * 10;
+          g.fillStyle = shades[idx % shades.length];
+          g.fillRect(0, y, 256, h);
+          y += h;
+          idx++;
+        }
+        return new THREE.CanvasTexture(c);
+      }
+
+      // Textura plovoucího čísla sedadla (1 až 6)
+      function createSeatNumberSprite(num) {
+        const c = document.createElement('canvas');
+        c.width = 128; c.height = 128;
+        const g = c.getContext('2d');
+        g.fillStyle = 'rgba(15, 15, 15, 0.88)';
+        g.beginPath();
+        g.arc(64, 64, 48, 0, Math.PI * 2);
+        g.fill();
+        g.lineWidth = 5;
+        g.strokeStyle = '#ffffff';
+        g.stroke();
+
+        g.fillStyle = '#ffffff';
+        g.font = 'bold 54px Poppins, sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(String(num), 64, 67);
+
+        const tex = new THREE.CanvasTexture(c);
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+        const sprite = new THREE.Sprite(mat);
+        sprite.scale.set(0.24, 0.24, 1);
+        return sprite;
+      }
+
+      const clickableMeshes = [];
+
+      // --- 1. ARCHITEKTURA MÍSTNOSTI MLÝNA (MONOCHROMATICKÁ) ---
+      const roomGroup = new THREE.Group();
+      vtScene.add(roomGroup);
+
+      // Podlaha
+      const floorGeo = new THREE.PlaneGeometry(4.6, 6.2);
+      const floorMat = createMonoMat(0x888888, 0.9);
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      roomGroup.add(floor);
+
+      // Jemná mřížka na podlaze
+      const gridHelper = new THREE.GridHelper(4.6, 12, 0x444444, 0x555555);
+      gridHelper.position.y = 0.003;
+      gridHelper.material.transparent = true;
+      gridHelper.material.opacity = 0.25;
+      roomGroup.add(gridHelper);
+
+      // Tmavší koberec v přední části u 1. gauče (podle fotky 1)
+      const rugGeo = new THREE.BoxGeometry(3.2, 0.012, 2.3);
+      const rug = new THREE.Mesh(rugGeo, createMonoMat(0x4e4e4e, 0.95));
+      rug.position.set(-0.5, 0.006, -1.5);
+      addEdgeLines(rug, 0x222222, 0.3);
+      roomGroup.add(rug);
+
+      // Přední kamenná zeď za plátnem (z = -3.1)
+      const stoneMat = new THREE.MeshStandardMaterial({
+        map: createStoneMonoTexture(),
+        roughness: 0.92
+      });
+      const frontWall = new THREE.Mesh(new THREE.BoxGeometry(4.6, 3.1, 0.16), stoneMat);
+      frontWall.position.set(0, 1.55, -3.1);
+      addEdgeLines(frontWall, 0x333333, 0.3);
+      roomGroup.add(frontWall);
+
+      // Dva svislé trámy za plátnem (podle fotky 1)
+      [-0.95, 0.45].forEach(bx => {
+        const beam = new THREE.Mesh(new THREE.BoxGeometry(0.14, 3.1, 0.12), createMonoMat(0x757575));
+        beam.position.set(bx, 1.55, -3.0);
+        addEdgeLines(beam);
+        roomGroup.add(beam);
+      });
+
+      // Levá hladší zeď (x = -2.3) + spodní kamenný sokl (podle fotek 1 a 2)
+      const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.16, 3.1, 6.2), createMonoMat(0xbdbdbd, 0.88));
+      leftWall.position.set(-2.3, 1.55, 0);
+      addEdgeLines(leftWall, 0x444444, 0.25);
+      roomGroup.add(leftWall);
+
+      const leftLedge = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.32, 5.2), createMonoMat(0x9a9a9a, 0.9));
+      leftLedge.position.set(-2.14, 0.16, 0.2);
+      addEdgeLines(leftLedge);
+      roomGroup.add(leftLedge);
+
+      // Schodiště vpravo a velká deska v rohu (podle fotky 1)
+      const cornerBoard = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.45, 0.08), createMonoMat(0x8e8e8e));
+      cornerBoard.position.set(1.45, 0.725, -2.55);
+      cornerBoard.rotation.y = -0.15;
+      addEdgeLines(cornerBoard);
+      roomGroup.add(cornerBoard);
+
+      // Schody podél pravé strany
+      const stairsGroup = new THREE.Group();
+      for (let i = 0; i < 9; i++) {
+        const step = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.08, 0.34), createMonoMat(0x969696));
+        step.position.set(1.9, 0.22 + i * 0.24, -1.1 + i * 0.30);
+        addEdgeLines(step);
+        stairsGroup.add(step);
+      }
+      // Zábradlí schodiště
+      const railPost1 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.25, 0.08), createMonoMat(0x7a7a7a));
+      railPost1.position.set(1.52, 0.62, -1.15);
+      addEdgeLines(railPost1);
+      stairsGroup.add(railPost1);
+
+      const railBar = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 2.9), createMonoMat(0x7a7a7a));
+      railBar.position.set(1.52, 1.85, 0.05);
+      railBar.rotation.x = -0.66;
+      addEdgeLines(railBar);
+      stairsGroup.add(railBar);
+      roomGroup.add(stairsGroup);
+
+      // Historická mlýnská násypka / trám u stropu za 2. gaučem (podle fotky 2)
+      const hopperGeo = new THREE.CylinderGeometry(0.45, 0.18, 0.65, 4);
+      const hopper = new THREE.Mesh(hopperGeo, createMonoMat(0x8a8a8a));
+      hopper.position.set(0.75, 2.55, 1.75);
+      hopper.rotation.y = Math.PI / 4;
+      addEdgeLines(hopper);
+      roomGroup.add(hopper);
+
+      // --- 2. PROJEKČNÍ PLÁTNO 120 PALCŮ S ANIMACEMI (MLYNÁŘ + VÉMYSLICKÝ HÁČEK 2027) ---
+      const screenCanvas = document.createElement('canvas');
+      screenCanvas.width = 1280;
+      screenCanvas.height = 720;
+      const sCtx = screenCanvas.getContext('2d');
+      const screenTexture = new THREE.CanvasTexture(screenCanvas);
+      screenTexture.minFilter = THREE.LinearFilter;
+
+      // Rám plátna (monochromatický)
+      const screenFrame = new THREE.Mesh(
+        new THREE.BoxGeometry(2.74, 1.56, 0.05),
+        createMonoMat(0x2a2a2a, 0.6)
+      );
+      screenFrame.position.set(-0.25, 1.98, -2.92);
+      addEdgeLines(screenFrame, 0xffffff, 0.4);
+      vtScene.add(screenFrame);
+
+      // Aktivní plocha plátna 120"
+      const screenPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(2.64, 1.48),
+        new THREE.MeshBasicMaterial({ map: screenTexture })
+      );
+      screenPlane.position.set(-0.25, 1.98, -2.892);
+      screenPlane.userData = { infoKey: 'screen' };
+      vtScene.add(screenPlane);
+      clickableMeshes.push(screenPlane);
+
+      // Funkce pro vykreslení animace na 120" plátno
+      function updateCinemaScreenCanvas(timeMs) {
+        const w = 1280, h = 720;
+        const t = timeMs * 0.001;
+
+        // Rozhodnutí, zda běží Mlynář nebo reklama na Vémyslický háček 2027
+        let showHacek = false;
+        if (vtScreenSlideMode === 'hacek') {
+          showHacek = true;
+        } else if (vtScreenSlideMode === 'mlynar') {
+          showHacek = false;
+        } else {
+          // Automatické střídání každých 7 sekund
+          showHacek = Math.floor(t / 7) % 2 === 1;
+        }
+
+        if (!showHacek) {
+          // === ANIMACE 1: KVM ORIGINALS – MLYNÁŘ ===
+          const bgGrad = sCtx.createRadialGradient(w / 2, h / 2, 60, w / 2, h / 2, 760);
+          bgGrad.addColorStop(0, '#2b2110');
+          bgGrad.addColorStop(0.55, '#0e0c0a');
+          bgGrad.addColorStop(1, '#040404');
+          sCtx.fillStyle = bgGrad;
+          sCtx.fillRect(0, 0, w, h);
+
+          // Animované paprsky projektoru / mlýnského kola na pozadí
+          sCtx.save();
+          sCtx.translate(w / 2, h / 2 - 20);
+          sCtx.rotate(t * 0.25);
+          sCtx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
+          sCtx.lineWidth = 4;
+          sCtx.beginPath();
+          sCtx.arc(0, 0, 230, 0, Math.PI * 2);
+          sCtx.stroke();
+          sCtx.beginPath();
+          sCtx.arc(0, 0, 170, 0, Math.PI * 2);
+          sCtx.stroke();
+          for (let i = 0; i < 8; i++) {
+            const ang = (i * Math.PI) / 4;
+            sCtx.beginPath();
+            sCtx.moveTo(Math.cos(ang) * 40, Math.sin(ang) * 40);
+            sCtx.lineTo(Math.cos(ang) * 250, Math.sin(ang) * 250);
+            sCtx.stroke();
+          }
+          sCtx.restore();
+
+          // Plovoucí zlaté částice
+          for (let i = 0; i < 24; i++) {
+            const px = ((i * 197 + t * 35) % w);
+            const py = ((i * 113 - t * 22 + h * 10) % h);
+            const alpha = 0.25 + 0.35 * Math.sin(t * 2 + i);
+            sCtx.fillStyle = `rgba(212, 175, 55, ${alpha})`;
+            sCtx.beginPath();
+            sCtx.arc(px, py, 2.5 + (i % 3), 0, Math.PI * 2);
+            sCtx.fill();
+          }
+
+          // Filmové okraje nahoře a dole
+          sCtx.fillStyle = '#000000';
+          sCtx.fillRect(0, 0, w, 58);
+          sCtx.fillRect(0, h - 58, w, 58);
+
+          // Horní štítek
+          sCtx.fillStyle = '#d4af37';
+          sCtx.font = 'bold 24px Poppins, sans-serif';
+          sCtx.textAlign = 'center';
+          sCtx.fillText('🎬  KINO VE MLÝNĚ ORIGINALS  •  V PRODUKCI', w / 2, 145);
+
+          // Hlavní titul MLYNÁŘ s jemným pulsem
+          const pulse = 1 + 0.025 * Math.sin(t * 2.5);
+          sCtx.save();
+          sCtx.translate(w / 2, h / 2 + 10);
+          sCtx.scale(pulse, pulse);
+          sCtx.shadowColor = 'rgba(212, 175, 55, 0.55)';
+          sCtx.shadowBlur = 35;
+          sCtx.fillStyle = '#ffffff';
+          sCtx.font = '800 138px Poppins, sans-serif';
+          sCtx.fillText('MLYNÁŘ', 0, 0);
+          sCtx.restore();
+
+          // Podtitulek
+          sCtx.fillStyle = 'rgba(240, 240, 240, 0.85)';
+          sCtx.font = '400 28px Poppins, sans-serif';
+          sCtx.fillText('Klid historického mlýna naruší nebezpečná hra...', w / 2, h / 2 + 95);
+
+          // Spodní lišta
+          sCtx.fillStyle = '#d4af37';
+          sCtx.font = '700 24px Poppins, sans-serif';
+          sCtx.fillText('EXKLUZIVNĚ NA 120" PLÁTNĚ V SEZÓNĚ JARO 2027', w / 2, h - 105);
+
+        } else {
+          // === ANIMACE 2: REKLAMA NA VÉMYSLICKÝ HÁČEK 2027 – VELKÉ FINÁLE 5. ČERVNA (PODLE LOGA) ===
+          // Čisté světlé pozadí s jemným teplým leskem podle přiloženého loga
+          const lightBg = sCtx.createRadialGradient(w / 2, h / 2, 50, w / 2, h / 2, 780);
+          lightBg.addColorStop(0, '#ffffff');
+          lightBg.addColorStop(0.75, '#faf7f2');
+          lightBg.addColorStop(1, '#ede4d5');
+          sCtx.fillStyle = lightBg;
+          sCtx.fillRect(0, 0, w, h);
+
+          // Jemné animované kruhy na pozadí
+          sCtx.strokeStyle = 'rgba(232, 93, 4, 0.08)';
+          sCtx.lineWidth = 3;
+          const rippleR = 260 + 25 * Math.sin(t * 2.2);
+          sCtx.beginPath();
+          sCtx.arc(285, 315, rippleR, 0, Math.PI * 2);
+          sCtx.stroke();
+
+          // --- LEVÝ KRUHOVÝ EMBLEM LOGA (Vémyslický háček) ---
+          const cx = 285, cy = 315;
+          const ringGrad = sCtx.createLinearGradient(cx - 165, cy - 165, cx + 165, cy + 165);
+          ringGrad.addColorStop(0, '#ff6b00');
+          ringGrad.addColorStop(0.45, '#f59e0b');
+          ringGrad.addColorStop(0.75, '#1c1917');
+          ringGrad.addColorStop(1, '#ea580c');
+
+          // Vnější a vnitřní kruh
+          sCtx.strokeStyle = ringGrad;
+          sCtx.lineWidth = 8;
+          sCtx.beginPath();
+          sCtx.arc(cx, cy, 165, 0, Math.PI * 2);
+          sCtx.stroke();
+
+          sCtx.lineWidth = 4;
+          sCtx.beginPath();
+          sCtx.arc(cx, cy, 151, 0, Math.PI * 2);
+          sCtx.stroke();
+
+          // Ořez uvnitř kruhu pro vlny, rybu a háček
+          sCtx.save();
+          sCtx.beginPath();
+          sCtx.arc(cx, cy, 147, 0, Math.PI * 2);
+          sCtx.clip();
+
+          // Spodní animované vlny v kruhu (černá + oranžová podle loga)
+          const waveShift = Math.sin(t * 3) * 8;
+          sCtx.fillStyle = '#18181b';
+          sCtx.beginPath();
+          sCtx.moveTo(cx - 160, cy + 55 + waveShift * 0.5);
+          sCtx.bezierCurveTo(cx - 60, cy + 110, cx + 40, cy + 25, cx + 160, cy + 65 - waveShift * 0.5);
+          sCtx.lineTo(cx + 160, cy + 160);
+          sCtx.lineTo(cx - 160, cy + 160);
+          sCtx.closePath();
+          sCtx.fill();
+
+          const waveGrad = sCtx.createLinearGradient(cx - 140, cy + 70, cx + 140, cy + 140);
+          waveGrad.addColorStop(0, '#7c2d12');
+          waveGrad.addColorStop(0.5, '#ea580c');
+          waveGrad.addColorStop(1, '#18181b');
+          sCtx.fillStyle = waveGrad;
+          sCtx.beginPath();
+          sCtx.moveTo(cx - 160, cy + 92 - waveShift * 0.4);
+          sCtx.bezierCurveTo(cx - 30, cy + 135, cx + 50, cy + 55, cx + 160, cy + 90 + waveShift * 0.4);
+          sCtx.lineTo(cx + 160, cy + 160);
+          sCtx.lineTo(cx - 160, cy + 160);
+          sCtx.closePath();
+          sCtx.fill();
+
+          // Ryba vyskakující z vody (animovaný lehký pohyb)
+          const fishJump = Math.sin(t * 3.2) * 7;
+          sCtx.save();
+          sCtx.translate(cx - 18, cy - 12 + fishJump);
+          sCtx.rotate(-0.18 + Math.sin(t * 3.2) * 0.05);
+
+          const fishGrad = sCtx.createLinearGradient(-80, -50, 75, 45);
+          fishGrad.addColorStop(0, '#c2410c');
+          fishGrad.addColorStop(0.55, '#f97316');
+          fishGrad.addColorStop(1, '#fb923c');
+
+          // Tělo ryby
+          sCtx.fillStyle = fishGrad;
+          sCtx.beginPath();
+          sCtx.moveTo(78, -22); // čumák
+          sCtx.quadraticCurveTo(15, -68, -48, -28); // hřbet
+          sCtx.quadraticCurveTo(-82, -4, -76, 48); // ocasní násadec
+          sCtx.lineTo(-102, 72); // horní cíp ocasu
+          sCtx.quadraticCurveTo(-78, 72, -55, 86); // spodní cíp ocasu
+          sCtx.quadraticCurveTo(-48, 52, -32, 32); // břicho
+          sCtx.quadraticCurveTo(32, 22, 78, -22); // spodní čelist
+          sCtx.closePath();
+          sCtx.fill();
+
+          // Hřbetní ploutev (tmavá podle loga)
+          sCtx.fillStyle = '#18181b';
+          sCtx.beginPath();
+          sCtx.moveTo(-42, -32);
+          sCtx.quadraticCurveTo(-22, -64, 5, -45);
+          sCtx.closePath();
+          sCtx.fill();
+
+          // Břišní ploutev
+          sCtx.fillStyle = '#7c2d12';
+          sCtx.beginPath();
+          sCtx.moveTo(-12, 25);
+          sCtx.lineTo(-28, 48);
+          sCtx.lineTo(4, 34);
+          sCtx.closePath();
+          sCtx.fill();
+
+          // Oko a žábry
+          sCtx.fillStyle = '#18181b';
+          sCtx.beginPath();
+          sCtx.arc(46, -22, 4.5, 0, Math.PI * 2);
+          sCtx.fill();
+
+          sCtx.strokeStyle = '#18181b';
+          sCtx.lineWidth = 3.5;
+          sCtx.beginPath();
+          sCtx.arc(24, -14, 24, 1.1, 2.5);
+          sCtx.stroke();
+          sCtx.restore();
+
+          // Rybářský háček napravo v kruhu
+          const hookBob = Math.cos(t * 3.2) * 5;
+          sCtx.save();
+          sCtx.translate(cx + 88, cy - 18 + hookBob);
+          sCtx.strokeStyle = '#ea580c';
+          sCtx.lineWidth = 9;
+          sCtx.lineCap = 'round';
+          // Očko háčku
+          sCtx.beginPath();
+          sCtx.arc(0, -68, 12, 0, Math.PI * 2);
+          sCtx.stroke();
+          // Dřík a oblouk háčku
+          sCtx.beginPath();
+          sCtx.moveTo(0, -56);
+          sCtx.lineTo(0, 36);
+          sCtx.arc(-28, 36, 28, 0, Math.PI, false);
+          sCtx.lineTo(-56, 12);
+          // Protihrot
+          sCtx.lineTo(-46, 24);
+          sCtx.stroke();
+          sCtx.restore();
+
+          sCtx.restore(); // konec ořezu kruhu
+
+          // --- PRAVÁ TYPOGRAFIE LOGA: "Vémyslický háček 2027" ---
+          const textGrad = sCtx.createLinearGradient(500, 0, 1180, 0);
+          textGrad.addColorStop(0, '#ff6b00');
+          textGrad.addColorStop(0.45, '#d95300');
+          textGrad.addColorStop(0.72, '#292524');
+          textGrad.addColorStop(1, '#09090b');
+
+          sCtx.textAlign = 'left';
+          sCtx.fillStyle = textGrad;
+          sCtx.font = '600 104px Georgia, "Times New Roman", serif';
+          sCtx.fillText('Vémyslický', 495, 255);
+          sCtx.fillText('háček 2027', 495, 368);
+
+          // Ozdobná dělící linka s diamantem uprostřed
+          const divGrad = sCtx.createLinearGradient(495, 0, 1180, 0);
+          divGrad.addColorStop(0, 'rgba(234, 88, 12, 0.15)');
+          divGrad.addColorStop(0.5, '#ea580c');
+          divGrad.addColorStop(1, 'rgba(24, 24, 27, 0.2)');
+          sCtx.strokeStyle = divGrad;
+          sCtx.lineWidth = 3;
+          sCtx.beginPath();
+          sCtx.moveTo(495, 405);
+          sCtx.lineTo(1180, 405);
+          sCtx.stroke();
+
+          // Diamant na dělící lince
+          sCtx.fillStyle = '#ea580c';
+          sCtx.save();
+          sCtx.translate(838, 405);
+          sCtx.rotate(Math.PI / 4);
+          sCtx.fillRect(-7, -7, 14, 14);
+          sCtx.restore();
+
+          // Podtitul: CHAPTER III: THE FINAL CAST
+          sCtx.font = '600 25px Georgia, serif';
+          sCtx.fillStyle = '#ea580c';
+          sCtx.fillText('C H A P T E R   I I I :', 525, 452);
+          sCtx.fillStyle = '#18181b';
+          sCtx.fillText('T H E   F I N A L   C A S T', 835, 452);
+
+          // --- SPODNÍ ANIMOVANÝ BANNER: VELKÉ FINÁLE 5. ČERVNA ---
+          const bannerPulse = 0.92 + 0.08 * Math.sin(t * 4);
+          const bannerGrad = sCtx.createLinearGradient(140, 530, 1140, 650);
+          bannerGrad.addColorStop(0, '#18181b');
+          bannerGrad.addColorStop(0.5, '#291d14');
+          bannerGrad.addColorStop(1, '#18181b');
+
+          sCtx.fillStyle = bannerGrad;
+          sCtx.beginPath();
+          sCtx.roundRect(140, 525, 1000, 112, 22);
+          sCtx.fill();
+
+          sCtx.strokeStyle = `rgba(249, 115, 22, ${bannerPulse})`;
+          sCtx.lineWidth = 4;
+          sCtx.stroke();
+
+          sCtx.textAlign = 'center';
+          sCtx.fillStyle = '#fb923c';
+          sCtx.font = '800 42px Poppins, sans-serif';
+          sCtx.fillText('🏆  VELKÉ FINÁLE  •  5. ČERVNA  🏆', w / 2, 578);
+
+          sCtx.fillStyle = '#f5f5f4';
+          sCtx.font = '500 22px Poppins, sans-serif';
+          sCtx.fillText('Nenechte si ujít vyvrcholení rybářských závodů Vémyslický háček 2027!', w / 2, 616);
+        }
+
+        screenTexture.needsUpdate = true;
+      }
+
+      // --- 3. AUDIO SYSTÉM POD PLÁTNEM (MONOCHROMATICKÝ) ---
+      const audioGroup = new THREE.Group();
+      vtScene.add(audioGroup);
+
+      // A) PA Subwoofer uprostřed dole (velký černý/tmavě šedý box)
+      const subMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(0.58, 0.62, 0.50),
+        createMonoMat(0x303030, 0.75)
+      );
+      subMesh.position.set(-0.25, 0.31, -2.72);
+      addEdgeLines(subMesh, 0xd4af37, 0.5);
+      subMesh.userData = { infoKey: 'subwoofer' };
+      audioGroup.add(subMesh);
+      clickableMeshes.push(subMesh);
+
+      // Membrána PA subwooferu na přední straně
+      const subConeRing = new THREE.Mesh(
+        new THREE.RingGeometry(0.17, 0.21, 32),
+        new THREE.MeshBasicMaterial({ color: 0x777777, side: THREE.DoubleSide })
+      );
+      subConeRing.position.set(-0.25, 0.31, -2.468);
+      audioGroup.add(subConeRing);
+
+      const subCap = new THREE.Mesh(
+        new THREE.CircleGeometry(0.08, 24),
+        createMonoMat(0x1f1f1f, 0.5)
+      );
+      subCap.position.set(-0.25, 0.31, -2.467);
+      audioGroup.add(subCap);
+
+      // B) Centrální reproduktor Daewoo položený nahoře uprostřed na subwooferu
+      const daewooMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(0.24, 0.31, 0.22),
+        createMonoMat(0xb8b8b8, 0.5, 0.2)
+      );
+      daewooMesh.position.set(-0.25, 0.62 + 0.155, -2.68);
+      addEdgeLines(daewooMesh, 0x222222, 0.65);
+      daewooMesh.userData = { infoKey: 'daewoo' };
+      audioGroup.add(daewooMesh);
+      clickableMeshes.push(daewooMesh);
+
+      // Detail reproduktoru Daewoo (výškový + středobasový měnič)
+      const dwMid = new THREE.Mesh(
+        new THREE.RingGeometry(0.045, 0.068, 24),
+        new THREE.MeshBasicMaterial({ color: 0x222222, side: THREE.DoubleSide })
+      );
+      dwMid.position.set(-0.25, 0.72, -2.568);
+      audioGroup.add(dwMid);
+
+      const dwTweet = new THREE.Mesh(
+        new THREE.CircleGeometry(0.025, 20),
+        new THREE.MeshBasicMaterial({ color: 0x333333 })
+      );
+      dwTweet.position.set(-0.25, 0.84, -2.568);
+      audioGroup.add(dwTweet);
+
+      // C) Levý a pravý stojan + reproduktory Tesla nahoře vlevo a vpravo
+      const teslaConfigs = [
+        { x: -1.18, key: 'teslaLeft' },
+        { x:  0.68, key: 'teslaRight' }
+      ];
+
+      teslaConfigs.forEach(cfg => {
+        // Spodní podstavec / box pod reproduktorem Tesla
+        const standBox = new THREE.Mesh(
+          new THREE.BoxGeometry(0.32, 0.50, 0.28),
+          createMonoMat(0x525252, 0.85)
+        );
+        standBox.position.set(cfg.x, 0.25, -2.72);
+        addEdgeLines(standBox, 0x222222, 0.5);
+        audioGroup.add(standBox);
+
+        // Samotný reproduktor Tesla nahoře na podstavci
+        const teslaSpeaker = new THREE.Mesh(
+          new THREE.BoxGeometry(0.24, 0.38, 0.22),
+          createMonoMat(0x3a3a3a, 0.7)
+        );
+        teslaSpeaker.position.set(cfg.x, 0.50 + 0.19, -2.70);
+        addEdgeLines(teslaSpeaker, 0xd4af37, 0.55);
+        teslaSpeaker.userData = { infoKey: cfg.key };
+        audioGroup.add(teslaSpeaker);
+        clickableMeshes.push(teslaSpeaker);
+
+        // Přední mřížka Tesla
+        const grille = new THREE.Mesh(
+          new THREE.PlaneGeometry(0.20, 0.33),
+          createMonoMat(0x262626, 0.9)
+        );
+        grille.position.set(cfg.x, 0.69, -2.589);
+        audioGroup.add(grille);
+      });
+
+      // --- 4. DVA GAUČE A 6 ČÍSLOVANÝCH SEDADEL (1–3 VPŘEDU, 4–6 VZADU NA PALETÁCH) ---
+      const couchesGroup = new THREE.Group();
+      vtScene.add(couchesGroup);
+
+      // PŘEDNÍ GAUČ (1. řada, sedadla 1, 2, 3) na z = -0.68
+      const couch1Group = new THREE.Group();
+      couch1Group.position.set(-0.25, 0, -0.68);
+      couchesGroup.add(couch1Group);
+
+      // Sedák 1. gauče (rozdělený na 3 místa: 1, 2, 3)
+      const c1Base = new THREE.Mesh(
+        new THREE.BoxGeometry(2.04, 0.24, 0.80),
+        createMonoMat(0x6b6b6b, 0.88)
+      );
+      c1Base.position.set(0, 0.24, 0);
+      addEdgeLines(c1Base, 0x222222, 0.5);
+      c1Base.userData = { infoKey: 'couch1' };
+      couch1Group.add(c1Base);
+      clickableMeshes.push(c1Base);
+
+      // Nožičky 1. gauče
+      [[-0.92, -0.32], [0.92, -0.32], [-0.92, 0.32], [0.92, 0.32]].forEach(([lx, lz]) => {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.025, 0.12, 12), createMonoMat(0x2a2a2a));
+        leg.position.set(lx, 0.06, lz);
+        couch1Group.add(leg);
+      });
+
+      // Opěradlo 1. gauče (mírně zakloněné)
+      const c1Back = new THREE.Mesh(
+        new THREE.BoxGeometry(2.04, 0.50, 0.18),
+        createMonoMat(0x7c7c7c, 0.85)
+      );
+      c1Back.position.set(0, 0.56, 0.32);
+      c1Back.rotation.x = -0.16;
+      addEdgeLines(c1Back, 0x222222, 0.5);
+      c1Back.userData = { infoKey: 'couch1' };
+      couch1Group.add(c1Back);
+      clickableMeshes.push(c1Back);
+
+      // Sedadla 1, 2, 3 na 1. gauči (zleva doprava při pohledu na plátno)
+      [-0.66, 0, 0.66].forEach((sx, idx) => {
+        const seatNum = idx + 1;
+        // Prošívaný polštář sedáku
+        const cushion = new THREE.Mesh(
+          new THREE.BoxGeometry(0.65, 0.06, 0.62),
+          createMonoMat(0x8c8c8c, 0.82)
+        );
+        cushion.position.set(sx, 0.38, -0.06);
+        addEdgeLines(cushion, 0x333333, 0.45);
+        cushion.userData = { seatNum: seatNum };
+        couch1Group.add(cushion);
+        clickableMeshes.push(cushion);
+
+        // Plovoucí číslo 1, 2, 3
+        const badge = createSeatNumberSprite(seatNum);
+        badge.position.set(sx, 0.96, 0.25);
+        couch1Group.add(badge);
+      });
+
+      // ZADNÍ VYVÝŠENÝ GAUČ (2. řada, sedadla 4, 5, 6) na z = +0.72 na dřevěných paletách
+      const couch2Group = new THREE.Group();
+      couch2Group.position.set(-0.25, 0, 0.72);
+      couchesGroup.add(couch2Group);
+
+      // Dřevěná paletová podesta pod 2. gaučem (podle fotky 2)
+      const palletMat = createMonoMat(0x787878, 0.92);
+      [0.07, 0.22].forEach(py => {
+        const palletLayer = new THREE.Mesh(new THREE.BoxGeometry(2.06, 0.11, 0.86), palletMat);
+        palletLayer.position.set(0, py, 0.02);
+        addEdgeLines(palletLayer, 0x222222, 0.55);
+        couch2Group.add(palletLayer);
+      });
+
+      // Korpus 2. gauče na paletách
+      const c2Base = new THREE.Mesh(
+        new THREE.BoxGeometry(2.08, 0.24, 0.82),
+        createMonoMat(0x888888, 0.88)
+      );
+      c2Base.position.set(0, 0.44, 0);
+      addEdgeLines(c2Base, 0x222222, 0.5);
+      c2Base.userData = { infoKey: 'couch2' };
+      couch2Group.add(c2Base);
+      clickableMeshes.push(c2Base);
+
+      // Zadní opěradlo 2. gauče (podle fotky 1 s dřevěnými výztuhami zezadu)
+      const c2BackFrame = new THREE.Mesh(
+        new THREE.BoxGeometry(2.08, 0.52, 0.16),
+        createMonoMat(0x7e7e7e, 0.88)
+      );
+      c2BackFrame.position.set(0, 0.76, 0.34);
+      c2BackFrame.rotation.x = -0.14;
+      addEdgeLines(c2BackFrame, 0x222222, 0.5);
+      c2BackFrame.userData = { infoKey: 'couch2' };
+      couch2Group.add(c2BackFrame);
+      clickableMeshes.push(c2BackFrame);
+
+      // Dvě šikmé dřevěné vzpěry na zadní straně 2. gauče (viditelné na fotce 1)
+      [-0.55, 0.55].forEach(bx => {
+        const brace = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.62, 0.05), createMonoMat(0x9a9a9a));
+        brace.position.set(bx, 0.65, 0.44);
+        brace.rotation.x = 0.28;
+        addEdgeLines(brace);
+        couch2Group.add(brace);
+      });
+
+      // 3 pruhované monochromatické polštáře/opěrky na 2. gauči = sedadla 4, 5, 6 (zleva doprava)
+      const stripedMonoMat = new THREE.MeshStandardMaterial({
+        map: createStripedCushionMonoTexture(),
+        roughness: 0.85
+      });
+
+      [-0.66, 0, 0.66].forEach((sx, idx) => {
+        const seatNum = idx + 4; // 4, 5, 6
+
+        // Sedací polštář
+        const seatPad = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.08, 0.58), stripedMonoMat);
+        seatPad.position.set(sx, 0.59, -0.06);
+        addEdgeLines(seatPad, 0x222222, 0.5);
+        seatPad.userData = { seatNum: seatNum };
+        couch2Group.add(seatPad);
+        clickableMeshes.push(seatPad);
+
+        // Opěrný polštář
+        const backPad = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.46, 0.14), stripedMonoMat);
+        backPad.position.set(sx, 0.80, 0.23);
+        backPad.rotation.x = -0.15;
+        addEdgeLines(backPad, 0x222222, 0.5);
+        backPad.userData = { seatNum: seatNum };
+        couch2Group.add(backPad);
+        clickableMeshes.push(backPad);
+
+        // Plovoucí číslo 4, 5, 6
+        const badge = createSeatNumberSprite(seatNum);
+        badge.position.set(sx, 1.24, 0.26);
+        couch2Group.add(badge);
+      });
+
+      // --- 5. INTERAKTIVNÍ KLIKÁNÍ (RAYCASTER) & POZICOVÁNÍ 3D HOTSPOTŮ ---
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+      let downPos = { x: 0, y: 0 };
+
+      canvas.addEventListener('pointerdown', (e) => {
+        downPos = { x: e.clientX, y: e.clientY };
+      });
+
+      canvas.addEventListener('pointerup', (e) => {
+        const dist = Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y);
+        if (dist > 6) return; // Bylo to tažení kamerou, ne kliknutí
+
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(pointer, vtCamera);
+        const hits = raycaster.intersectObjects(clickableMeshes, false);
+        if (hits.length > 0) {
+          const hitObj = hits[0].object;
+          if (hitObj.userData.seatNum) {
+            const pill = document.querySelector(`.vt-seat-pill[data-seat-cam="${hitObj.userData.seatNum}"]`);
+            focusSeat3D(hitObj.userData.seatNum, pill);
+          } else if (hitObj.userData.infoKey) {
+            open3DInfo(hitObj.userData.infoKey);
+          }
+        }
+      });
+
+      // 3D kotvy pro HTML popisky
+      const hotspotAnchors = [
+        { id: 'hs-screen',      pos: new THREE.Vector3(-0.25, 2.75, -2.85) },
+        { id: 'hs-subwoofer',   pos: new THREE.Vector3(-0.25, 0.22, -2.42) },
+        { id: 'hs-daewoo',      pos: new THREE.Vector3(-0.25, 0.98, -2.55) },
+        { id: 'hs-tesla-left',  pos: new THREE.Vector3(-1.18, 0.95, -2.58) },
+        { id: 'hs-tesla-right', pos: new THREE.Vector3( 0.68, 0.95, -2.58) },
+        { id: 'hs-couch1',      pos: new THREE.Vector3(-1.25, 0.62, -0.68) },
+        { id: 'hs-couch2',      pos: new THREE.Vector3(-1.25, 0.95,  0.72) }
+      ];
+
+      function updateHotspotsPosition() {
+        const w = stage.clientWidth;
+        const h = stage.clientHeight;
+        hotspotAnchors.forEach(item => {
+          const el = document.getElementById(item.id);
+          if (!el) return;
+          const projected = item.pos.clone().project(vtCamera);
+          // Skrýt hotspot, pokud je za kamerou
+          if (projected.z > 1) {
+            el.style.opacity = '0';
+            el.style.pointerEvents = 'none';
+            return;
+          }
+          const x = (projected.x * 0.5 + 0.5) * w;
+          const y = (-projected.y * 0.5 + 0.5) * h;
+
+          if (x < 30 || x > w - 30 || y < 55 || y > h - 25) {
+            el.style.opacity = '0';
+            el.style.pointerEvents = 'none';
+          } else {
+            el.style.opacity = '1';
+            el.style.pointerEvents = 'auto';
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+          }
+        });
+      }
+
+      // --- 6. POHYB KLÁVESNICÍ (WASD / ŠIPKY) ---
+      const keysPressed = {};
+      window.addEventListener('keydown', (e) => {
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+        keysPressed[e.key.toLowerCase()] = true;
+      });
+      window.addEventListener('keyup', (e) => {
+        keysPressed[e.key.toLowerCase()] = false;
+      });
+
+      function handleKeyboardWalk() {
+        const speed = 0.045;
+        const forward = new THREE.Vector3();
+        vtCamera.getWorldDirection(forward);
+        forward.y = 0;
+        forward.normalize();
+
+        const right = new THREE.Vector3().crossVectors(forward, vtCamera.up).normalize();
+        let moved = false;
+
+        if (keysPressed['w'] || keysPressed['arrowup']) {
+          vtCamera.position.addScaledVector(forward, speed);
+          vtControls.target.addScaledVector(forward, speed);
+          moved = true;
+        }
+        if (keysPressed['s'] || keysPressed['arrowdown']) {
+          vtCamera.position.addScaledVector(forward, -speed);
+          vtControls.target.addScaledVector(forward, -speed);
+          moved = true;
+        }
+        if (keysPressed['a'] || keysPressed['arrowleft']) {
+          vtCamera.position.addScaledVector(right, -speed);
+          vtControls.target.addScaledVector(right, -speed);
+          moved = true;
+        }
+        if (keysPressed['d'] || keysPressed['arrowright']) {
+          vtCamera.position.addScaledVector(right, speed);
+          vtControls.target.addScaledVector(right, speed);
+          moved = true;
+        }
+
+        if (moved) {
+          vtCamTargetPos = null;
+          vtCamTargetLook = null;
+          // Udržet kameru uvnitř sálu
+          vtCamera.position.x = Math.max(-2.0, Math.min(2.0, vtCamera.position.x));
+          vtCamera.position.z = Math.max(-2.6, Math.min(2.8, vtCamera.position.z));
+        }
+      }
+
+      // Responzivní změna velikosti
+      function resize3D() {
+        const w = stage.clientWidth;
+        const h = stage.clientHeight;
+        if (!w || !h) return;
+        vtCamera.aspect = w / h;
+        vtCamera.updateProjectionMatrix();
+        vtRenderer.setSize(w, h);
+      }
+      window.addEventListener('resize', resize3D);
+      document.addEventListener('fullscreenchange', () => setTimeout(resize3D, 100));
+
+      // Hlavní animační smyčka
+      function animate3D(now) {
+        requestAnimationFrame(animate3D);
+
+        updateCinemaScreenCanvas(now);
+        handleKeyboardWalk();
+
+        // Plynulý přelet kamery při výběru pohledu nebo sedadla
+        if (vtCamTargetPos && vtCamTargetLook) {
+          vtCamera.position.lerp(vtCamTargetPos, 0.08);
+          vtControls.target.lerp(vtCamTargetLook, 0.08);
+          if (
+            vtCamera.position.distanceTo(vtCamTargetPos) < 0.015 &&
+            vtControls.target.distanceTo(vtCamTargetLook) < 0.015
+          ) {
+            vtCamTargetPos = null;
+            vtCamTargetLook = null;
+          }
+        }
+
+        vtControls.update();
+        updateHotspotsPosition();
+        vtRenderer.render(vtScene, vtCamera);
+      }
+
+      requestAnimationFrame(animate3D);
+    })();
   </script>
 </body>
 </html>
