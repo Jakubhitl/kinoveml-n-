@@ -1574,14 +1574,6 @@
       <button class="vision-close" onclick="toggleJarvin()">&times;</button>
     </div>
     
-    <div class="chat-chips-grid">
-      <button class="chat-chip" onclick="askQuestion('🪑 Kolik je v sále míst?')">🪑 Kapacita</button>
-      <button class="chat-chip" onclick="askQuestion('🎟️ Jaká je cena lístku?')">🎟️ Ceny lístků</button>
-      <button class="chat-chip" onclick="askQuestion('🎬 Můžu si pronajmout celé kino a kolik to stojí?')">🎬 Pronájem kina</button>
-      <button class="chat-chip" onclick="askQuestion('⭐ Který balíček na pronájem je nejvýhodnější?')">⭐ Nejvýhodnější balíček</button>
-      <button class="chat-chip" onclick="askQuestion('🆔 Co je to KinoID a jaké má výhody?')">🆔 Výhody KinoID</button>
-    </div>
-
     <div id="chat-log">
       <div class="bubble jarvin">Dobrý den! Vítejte v Kino OS 27. Jak vám mohu pomoci?</div>
     </div>
@@ -1783,51 +1775,50 @@
     // --- VISION AI CHATBOT ---
     function toggleJarvin() { document.getElementById("jarvin-window").classList.toggle("active"); }
 
-    const faqAnswers = {
-      "🪑 Kolik je v sále míst?": "Sál má komorní kapacitu pouhých 6 míst. Díky tomu si užiješ maximální soukromí, pohodlí a prémiový zážitek.",
-      "🎟️ Jaká je cena lístku?": "Na běžné promítání (např. film Michael) je cena 35 Kč za osobu.",
-      "🎬 Můžu si pronajmout celé kino a kolik to stojí?": "Ano, celé kino si můžeš pronajmout jen pro sebe a své přátele! Nabízíme 3 balíčky: Basic za 349 Kč (až 2 hodiny), Standard za 499 Kč (až 3 hodiny + popcorn zdarma) a VIP za 899 Kč (až 5 hodin, popcorn, nápoje + 30% sleva na baru).",
-      "⭐ Který balíček na pronájem je nejvýhodnější?": "Zlatou střední cestou je Standard (499 Kč) – získáš nejlepší poměr ceny a výkonu (Netflix, Disney+, HBO Max, zdarma popcorn pro každého a až 3 hodiny). Záleží ale na situaci: Na krátký film stačí Basic (349 Kč), pro pořádný filmový večer se slevou na baru je nejlepší VIP (899 Kč).",
-      "🆔 Co je to KinoID a jaké má výhody?": "Bezplatná registrace, se kterou získáš 10% slevu na první vstupenku nebo pronájem a přednostní přístup ke všem novinkám z naší autorské produkce KVM Originals."
-    };
+    var aiOdpovida = false;
 
-    function askQuestion(questionText) {
+    function pridejBublinu(text, typ) {
       const chat = document.getElementById("chat-log");
-      chat.innerHTML += `<div class="bubble user">${questionText}</div>`;
+      const bublina = document.createElement("div");
+      bublina.className = "bubble " + typ;
+      bublina.style.whiteSpace = "pre-wrap";
+      bublina.style.overflowWrap = "anywhere";
+      bublina.textContent = text;
+      chat.appendChild(bublina);
       chat.scrollTop = chat.scrollHeight;
-
-      setTimeout(() => {
-        const answer = faqAnswers[questionText] || "Promiňte, na tuto otázku nemám odpověď.";
-        chat.innerHTML += `<div class="bubble jarvin">${answer}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-      }, 350);
+      return bublina;
     }
 
     function jarvinReply() {
       const input = document.getElementById("user-input");
-      const text = input.value.trim();
-      if (!text) return;
+      const dotaz = input.value.trim();
+      if (!dotaz || aiOdpovida) return;
 
-      const chat = document.getElementById("chat-log");
-      chat.innerHTML += `<div class="bubble user">${text}</div>`;
+      // Odkaz na backend (Google Apps Script)
+      var googleSkriptUrl = "https://script.google.com/macros/s/AKfycbzFN1W9mOUxqNOoUzKxjiE2VsEisI_VyUjv3eeqQOLw1y1Z7OkZNb6C9hLt37fpnayGOw/exec";
+
+      aiOdpovida = true;
+      pridejBublinu(dotaz, "user");
       input.value = "";
-      chat.scrollTop = chat.scrollHeight;
+      const odpoved = pridejBublinu("Přemýšlím...", "jarvin");
 
-      setTimeout(() => {
-        let response = "";
-        if (faqAnswers[text]) {
-          response = faqAnswers[text];
-        } else {
-          const replies = [
-            "Kapacita sálu je komorní 6 osob.",
-            "Těšíme se na vaši návštěvu na jaře 2027!",
-            "Vyzkoušejte si také náš interaktivní 3D sál přímo na stránce a posaďte se na kterékoliv ze 6 míst."
-          ];
-          response = replies[Math.floor(Math.random() * replies.length)];
-        }
-        chat.innerHTML += `<div class="bubble jarvin">${response}</div>`;
+      fetch(googleSkriptUrl, {
+        method: "POST",
+        body: JSON.stringify({ dotaz: dotaz })
+      })
+      .then(res => res.json())
+      .then(data => {
+        odpoved.textContent = data.odpoved || "Omlouvám se, odpověď se nepodařilo získat.";
+      })
+      .catch(err => {
+        odpoved.textContent = "Chyba při spojení.";
+        console.error(err);
+      })
+      .finally(() => {
+        aiOdpovida = false;
+        const chat = document.getElementById("chat-log");
         chat.scrollTop = chat.scrollHeight;
-      }, 500);
+      });
     }
 
     // =========================================================================
@@ -3086,6 +3077,5 @@
   </script>
 </body>
 </html>
-
 
 
