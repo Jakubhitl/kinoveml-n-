@@ -1773,7 +1773,27 @@
     };
 
     // --- VISION AI CHATBOT ---
-    function toggleJarvin() { document.getElementById("jarvin-window").classList.toggle("active"); }
+    var googleSkriptUrl = "https://script.google.com/macros/s/AKfycbz3hs9fs-gMTxSVP_25r67Klisga4Puulh1FNX-8SRrhoT350o5hkp-pXWkjPwn72kzpw/exec";
+    var visionProbuzeno = false;
+
+    function probuditVisionAI() {
+      if (visionProbuzeno) return;
+      visionProbuzeno = true;
+      fetch(googleSkriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ ping: true }),
+        redirect: "follow"
+      }).catch(() => {});
+    }
+
+    function toggleJarvin() {
+      const okno = document.getElementById("jarvin-window");
+      okno.classList.toggle("active");
+      if (okno.classList.contains("active")) {
+        probuditVisionAI();
+      }
+    }
 
     var aiOdpovida = false;
 
@@ -1794,24 +1814,40 @@
       const dotaz = input.value.trim();
       if (!dotaz || aiOdpovida) return;
 
-      // Odkaz na backend (Google Apps Script)
-      var googleSkriptUrl = "https://script.google.com/macros/s/AKfycbz3hs9fs-gMTxSVP_25r67Klisga4Puulh1FNX-8SRrhoT350o5hkp-pXWkjPwn72kzpw/exec";
-
       aiOdpovida = true;
       pridejBublinu(dotaz, "user");
       input.value = "";
       const odpoved = pridejBublinu("Přemýšlím...", "jarvin");
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       fetch(googleSkriptUrl, {
         method: "POST",
-        body: JSON.stringify({ dotaz: dotaz })
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ dotaz: dotaz }),
+        redirect: "follow",
+        signal: controller.signal
       })
-      .then(res => res.json())
+      .then(async res => {
+        clearTimeout(timeoutId);
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error("Neplatná odpověď serveru");
+        }
+      })
       .then(data => {
         odpoved.textContent = data.odpoved || "Omlouvám se, odpověď se nepodařilo získat.";
       })
       .catch(err => {
-        odpoved.textContent = "Chyba při spojení.";
+        clearTimeout(timeoutId);
+        if (err.name === "AbortError") {
+          odpoved.textContent = "Spojení trvalo příliš dlouho. Zkus dotaz poslat ještě jednou.";
+        } else {
+          odpoved.textContent = "Chyba při spojení se serverem. Zkus to prosím za chvilku.";
+        }
         console.error(err);
       })
       .finally(() => {
@@ -3077,5 +3113,3 @@
   </script>
 </body>
 </html>
-
-
